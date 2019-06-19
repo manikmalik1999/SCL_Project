@@ -6,7 +6,7 @@ const Product = require("../models/product");
 
 router.get("/", (req, res, next) => {
   Product.find()
-  .select('value')
+  .select('value startTime endTime')
     .exec()
     .then(docs => {
       const response = {
@@ -31,7 +31,8 @@ router.get("/", (req, res, next) => {
               router.post("/", (req, res, next) => {
                 const product = new Product({
                   _id: new mongoose.Types.ObjectId(),
-                  name: req.body.name,
+                  startTime: req.body.startTime,
+                  endTime: req.body.endTime,
                   value: req.body.value
                 });
                 product
