@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<!-- saved from url=(0092)https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/ -->
+<html lang="en-US" class="gr__jpaul_me"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<link rel="pingback" href="https://www.jpaul.me/xmlrpc.php">
+<title>How to build a Raspberry Pi Serial Console Server with ser2net | Justin's IT Blog</title>
+
+<script async="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/mtc.js.download"></script><script type="text/javascript" async="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/hx65cb43pufg.js.download"></script><script async="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/analytics.js.download"></script><script type="text/template" id="pvc-stats-view-template">
+    <i class="fa fa-bar-chart pvc-stats-icon medium" aria-hidden="true"></i> 
+	<% if ( total_view > 0 ) { %>
+		<%= total_view %> <%= total_view > 1 ? "total views" : "total view" %>,
+		<% if ( today_view > 0 ) { %>
+			<%= today_view %> <%= today_view > 1 ? "views today" : "view today" %>
+		<% } else { %>
+		no views today		<% } %>
+	<% } else { %>
+	No views yet	<% } %>
+	</script>
+<style>
+.stb-container-css {margin: 10px 10px 10px 10px;}.stb-box {}.stb-caption-box {}.stb-body-box {}
+/* Class Dependent Parameters */
+.stb-border.stb-alert-container {border: 1px none #FD3C35;}.stb-side.stb-alert-container {background: #FD3C35;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FD3C35', endColorstr='#8D251D',GradientType=0 );background: -moz-linear-gradient(top,  #FD3C35 30%, #8D251D 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FD3C35), color-stop(90%,#8D251D));background: -webkit-linear-gradient(top,  #FD3C35 30%,#8D251D 90%);background: -o-linear-gradient(top,  #FD3C35 30%,#8D251D 90%);background: -ms-linear-gradient(top,  #FD3C35 30%,#8D251D 90%);background: linear-gradient(#FD3C35 30%, #8D251D 90%);}.stb-side-none.stb-alert-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-alert_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-alert-caption_box {background: #FD3C35;background: -moz-linear-gradient(top,  #FD3C35 30%, #8D251D 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FD3C35), color-stop(90%,#8D251D));background: -webkit-linear-gradient(top,  #FD3C35 30%,#8D251D 90%);background: -o-linear-gradient(top,  #FD3C35 30%,#8D251D 90%);background: -ms-linear-gradient(top,  #FD3C35 30%,#8D251D 90%);background: linear-gradient(#FD3C35 30%, #8D251D 90%);color: #FFFFFF;}.stb-alert-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-border.stb-black-container {border: 1px none #3B3B3B;}.stb-side.stb-black-container {background: #3B3B3B;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3B3B3B', endColorstr='#000000',GradientType=0 );background: -moz-linear-gradient(top,  #3B3B3B 30%, #000000 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#3B3B3B), color-stop(90%,#000000));background: -webkit-linear-gradient(top,  #3B3B3B 30%,#000000 90%);background: -o-linear-gradient(top,  #3B3B3B 30%,#000000 90%);background: -ms-linear-gradient(top,  #3B3B3B 30%,#000000 90%);background: linear-gradient(#3B3B3B 30%, #000000 90%);}.stb-side-none.stb-black-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-black_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-black-caption_box {background: #3B3B3B;background: -moz-linear-gradient(top,  #3B3B3B 30%, #000000 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#3B3B3B), color-stop(90%,#000000));background: -webkit-linear-gradient(top,  #3B3B3B 30%,#000000 90%);background: -o-linear-gradient(top,  #3B3B3B 30%,#000000 90%);background: -ms-linear-gradient(top,  #3B3B3B 30%,#000000 90%);background: linear-gradient(#3B3B3B 30%, #000000 90%);color: #FFFFFF;}.stb-black-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-border.stb-custom-container {border: 1px none #F7CDF5;}.stb-side.stb-custom-container {background: #F7CDF5;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F7CDF5', endColorstr='#F77DF1',GradientType=0 );background: -moz-linear-gradient(top,  #F7CDF5 30%, #F77DF1 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#F7CDF5), color-stop(90%,#F77DF1));background: -webkit-linear-gradient(top,  #F7CDF5 30%,#F77DF1 90%);background: -o-linear-gradient(top,  #F7CDF5 30%,#F77DF1 90%);background: -ms-linear-gradient(top,  #F7CDF5 30%,#F77DF1 90%);background: linear-gradient(#F7CDF5 30%, #F77DF1 90%);}.stb-side-none.stb-custom-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-custom_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-custom-caption_box {background: #F7CDF5;background: -moz-linear-gradient(top,  #F7CDF5 30%, #F77DF1 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#F7CDF5), color-stop(90%,#F77DF1));background: -webkit-linear-gradient(top,  #F7CDF5 30%,#F77DF1 90%);background: -o-linear-gradient(top,  #F7CDF5 30%,#F77DF1 90%);background: -ms-linear-gradient(top,  #F7CDF5 30%,#F77DF1 90%);background: linear-gradient(#F7CDF5 30%, #F77DF1 90%);color: #FFFFFF;}.stb-custom-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-border.stb-download-container {border: 1px none #78C0F7;}.stb-side.stb-download-container {background: #78C0F7;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#78C0F7', endColorstr='#2E7CB9',GradientType=0 );background: -moz-linear-gradient(top,  #78C0F7 30%, #2E7CB9 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#78C0F7), color-stop(90%,#2E7CB9));background: -webkit-linear-gradient(top,  #78C0F7 30%,#2E7CB9 90%);background: -o-linear-gradient(top,  #78C0F7 30%,#2E7CB9 90%);background: -ms-linear-gradient(top,  #78C0F7 30%,#2E7CB9 90%);background: linear-gradient(#78C0F7 30%, #2E7CB9 90%);}.stb-side-none.stb-download-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-download_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-download-caption_box {background: #78C0F7;background: -moz-linear-gradient(top,  #78C0F7 30%, #2E7CB9 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#78C0F7), color-stop(90%,#2E7CB9));background: -webkit-linear-gradient(top,  #78C0F7 30%,#2E7CB9 90%);background: -o-linear-gradient(top,  #78C0F7 30%,#2E7CB9 90%);background: -ms-linear-gradient(top,  #78C0F7 30%,#2E7CB9 90%);background: linear-gradient(#78C0F7 30%, #2E7CB9 90%);color: #FFFFFF;}.stb-download-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-border.stb-grey-container {border: 1px none #E3E3E3;}.stb-side.stb-grey-container {background: #E3E3E3;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E3E3E3', endColorstr='#ABABAB',GradientType=0 );background: -moz-linear-gradient(top,  #E3E3E3 30%, #ABABAB 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#E3E3E3), color-stop(90%,#ABABAB));background: -webkit-linear-gradient(top,  #E3E3E3 30%,#ABABAB 90%);background: -o-linear-gradient(top,  #E3E3E3 30%,#ABABAB 90%);background: -ms-linear-gradient(top,  #E3E3E3 30%,#ABABAB 90%);background: linear-gradient(#E3E3E3 30%, #ABABAB 90%);}.stb-side-none.stb-grey-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-grey_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-grey-caption_box {background: #E3E3E3;background: -moz-linear-gradient(top,  #E3E3E3 30%, #ABABAB 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#E3E3E3), color-stop(90%,#ABABAB));background: -webkit-linear-gradient(top,  #E3E3E3 30%,#ABABAB 90%);background: -o-linear-gradient(top,  #E3E3E3 30%,#ABABAB 90%);background: -ms-linear-gradient(top,  #E3E3E3 30%,#ABABAB 90%);background: linear-gradient(#E3E3E3 30%, #ABABAB 90%);color: #FFFFFF;}.stb-grey-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-border.stb-info-container {border: 1px none #A1EA94;}.stb-side.stb-info-container {background: #A1EA94;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#A1EA94', endColorstr='#79B06E',GradientType=0 );background: -moz-linear-gradient(top,  #A1EA94 30%, #79B06E 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#A1EA94), color-stop(90%,#79B06E));background: -webkit-linear-gradient(top,  #A1EA94 30%,#79B06E 90%);background: -o-linear-gradient(top,  #A1EA94 30%,#79B06E 90%);background: -ms-linear-gradient(top,  #A1EA94 30%,#79B06E 90%);background: linear-gradient(#A1EA94 30%, #79B06E 90%);}.stb-side-none.stb-info-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-info_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-info-caption_box {background: #A1EA94;background: -moz-linear-gradient(top,  #A1EA94 30%, #79B06E 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#A1EA94), color-stop(90%,#79B06E));background: -webkit-linear-gradient(top,  #A1EA94 30%,#79B06E 90%);background: -o-linear-gradient(top,  #A1EA94 30%,#79B06E 90%);background: -ms-linear-gradient(top,  #A1EA94 30%,#79B06E 90%);background: linear-gradient(#A1EA94 30%, #79B06E 90%);color: #FFFFFF;}.stb-info-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-border.stb-warning-container {border: 1px none #FDE97D;}.stb-side.stb-warning-container {background: #FDE97D;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FDE97D', endColorstr='#F09C08',GradientType=0 );background: -moz-linear-gradient(top,  #FDE97D 30%, #F09C08 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FDE97D), color-stop(90%,#F09C08));background: -webkit-linear-gradient(top,  #FDE97D 30%,#F09C08 90%);background: -o-linear-gradient(top,  #FDE97D 30%,#F09C08 90%);background: -ms-linear-gradient(top,  #FDE97D 30%,#F09C08 90%);background: linear-gradient(#FDE97D 30%, #F09C08 90%);}.stb-side-none.stb-warning-container {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);}.stb-warning_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}.stb-warning-caption_box {background: #FDE97D;background: -moz-linear-gradient(top,  #FDE97D 30%, #F09C08 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FDE97D), color-stop(90%,#F09C08));background: -webkit-linear-gradient(top,  #FDE97D 30%,#F09C08 90%);background: -o-linear-gradient(top,  #FDE97D 30%,#F09C08 90%);background: -ms-linear-gradient(top,  #FDE97D 30%,#F09C08 90%);background: linear-gradient(#FDE97D 30%, #F09C08 90%);color: #FFFFFF;}.stb-warning-body_box {background: #FFFFFF;filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#DDDDDD',GradientType=0 );background: -moz-linear-gradient(top,  #FFFFFF 30%, #DDDDDD 90%);background: -webkit-gradient(linear, left top, left bottom, color-stop(30%,#FFFFFF), color-stop(90%,#DDDDDD));background: -webkit-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -o-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: -ms-linear-gradient(top,  #FFFFFF 30%,#DDDDDD 90%);background: linear-gradient(#FFFFFF 30%, #DDDDDD 90%);color: #000000;}</style>
+<style>@font-face {font-family: "sw-icon-font";src:url("https://www.jpaul.me/wp-content/plugins/social-warfare/assets/fonts/sw-icon-font.eot?ver=3.6.1");src:url("https://www.jpaul.me/wp-content/plugins/social-warfare/assets/fonts/sw-icon-font.eot?ver=3.6.1#iefix") format("embedded-opentype"),url("https://www.jpaul.me/wp-content/plugins/social-warfare/assets/fonts/sw-icon-font.woff?ver=3.6.1") format("woff"),
+	url("https://www.jpaul.me/wp-content/plugins/social-warfare/assets/fonts/sw-icon-font.ttf?ver=3.6.1") format("truetype"),url("https://www.jpaul.me/wp-content/plugins/social-warfare/assets/fonts/sw-icon-font.svg?ver=3.6.1#1445203416") format("svg");font-weight: normal;font-style: normal;}</style>
+
+
+<link rel="canonical" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="If you’ve ever built a Cisco CCNA lab or some other hardware lab that has serial console ports, there is a good chance you sat within a few feet of the gear with a serial cable to your computer while working on it. How fun was that?!? Recently a friend started studying for the CCNA…">
+<meta name="twitter:title" content="How to build a Raspberry Pi Serial Console Server with ser2net | Justin&#39;s IT Blog">
+<meta name="twitter:site" content="@recklessop">
+<meta name="twitter:image" content="https://www.jpaul.me/wp-content/uploads/2019/01/raspberry-400x400.jpg">
+<meta name="twitter:creator" content="@recklessop">
+<script type="application/ld+json" class="yoast-schema-graph yoast-schema-graph--main">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.jpaul.me/#organization","name":"jpaul.me","url":"https://www.jpaul.me/","sameAs":["https://www.facebook.com/justinsitblog/","https://www.linkedin.com/pub/justin-paul/10/95b/391","https://www.youtube.com/channel/UCQpLf86ukA5zYkTjUNKDtSg","https://twitter.com/recklessop"]},{"@type":"WebSite","@id":"https://www.jpaul.me/#website","url":"https://www.jpaul.me/","name":"Justin&#039;s IT Blog","publisher":{"@id":"https://www.jpaul.me/#organization"},"potentialAction":{"@type":"SearchAction","target":"https://www.jpaul.me/?s={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"ImageObject","@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#primaryimage","url":"https://www.jpaul.me/wp-content/uploads/2019/01/raspberry-400x400.jpg","width":400,"height":400},{"@type":"WebPage","@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#webpage","url":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/","inLanguage":"en-US","name":"How to build a Raspberry Pi Serial Console Server with ser2net | Justin&#039;s IT Blog","isPartOf":{"@id":"https://www.jpaul.me/#website"},"primaryImageOfPage":{"@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#primaryimage"},"datePublished":"2019-01-29T21:59:58+00:00","dateModified":"2019-01-29T22:00:07+00:00","breadcrumb":{"@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.jpaul.me/","url":"https://www.jpaul.me/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://www.jpaul.me/category/home-lab/","url":"https://www.jpaul.me/category/home-lab/","name":"Home Lab"}},{"@type":"ListItem","position":3,"item":{"@type":"WebPage","@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/","url":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/","name":"How to build a Raspberry Pi Serial Console Server with ser2net"}}]},{"@type":"Article","@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#article","isPartOf":{"@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#webpage"},"author":{"@id":"https://www.jpaul.me/author/admin/#author"},"headline":"How to build a Raspberry Pi Serial Console Server with ser2net","datePublished":"2019-01-29T21:59:58+00:00","dateModified":"2019-01-29T22:00:07+00:00","commentCount":"4","mainEntityOfPage":{"@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#webpage"},"publisher":{"@id":"https://www.jpaul.me/#organization"},"image":{"@id":"https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#primaryimage"},"keywords":"Cisco,linux,raspberrypi","articleSection":"Hardware,Home Lab,Linux Related"},{"@type":["Person"],"@id":"https://www.jpaul.me/author/admin/#author","name":"Justin Paul","image":{"@type":"ImageObject","@id":"https://www.jpaul.me/#authorlogo","url":"https://secure.gravatar.com/avatar/de9b95aa2875c8600338abf1f3d70b7c?s=96&d=mm&r=x","caption":"Justin Paul"},"description":"Justin is a Technical Alliances Architect for Zerto. He also specializes in all things geek. When not helping people learn about protecting their data from disasters, he is usually working on stuff in his home lab or spending time with his family.","sameAs":[]}]}</script>
+
+<link rel="dns-prefetch" href="https://s0.wp.com/">
+<link rel="dns-prefetch" href="https://secure.gravatar.com/">
+<link rel="dns-prefetch" href="https://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="Justin&#39;s IT Blog » Feed" href="https://www.jpaul.me/feed/">
+<link rel="alternate" type="application/rss+xml" title="Justin&#39;s IT Blog » Comments Feed" href="https://www.jpaul.me/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="Justin&#39;s IT Blog » How to build a Raspberry Pi Serial Console Server with ser2net Comments Feed" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/feed/">
+
+<script type="text/javascript" data-cfasync="false">
+	var mi_version         = '7.7.1';
+	var mi_track_user      = true;
+	var mi_no_track_reason = '';
+	
+	var disableStr = 'ga-disable-UA-16893509-2';
+
+	/* Function to detect opted out users */
+	function __gaTrackerIsOptedOut() {
+		return document.cookie.indexOf(disableStr + '=true') > -1;
+	}
+
+	/* Disable tracking if the opt-out cookie exists. */
+	if ( __gaTrackerIsOptedOut() ) {
+		window[disableStr] = true;
+	}
+
+	/* Opt-out function */
+	function __gaTrackerOptout() {
+	  document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+	  window[disableStr] = true;
+	}
+	
+	if ( mi_track_user ) {
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','__gaTracker');
+
+		__gaTracker('create', 'UA-16893509-2', 'auto');
+		__gaTracker('set', 'forceSSL', true);
+		__gaTracker('require', 'displayfeatures');
+		__gaTracker('send','pageview');
+	} else {
+		console.log( "" );
+		(function() {
+			/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
+			var noopfn = function() {
+				return null;
+			};
+			var noopnullfn = function() {
+				return null;
+			};
+			var Tracker = function() {
+				return null;
+			};
+			var p = Tracker.prototype;
+			p.get = noopfn;
+			p.set = noopfn;
+			p.send = noopfn;
+			var __gaTracker = function() {
+				var len = arguments.length;
+				if ( len === 0 ) {
+					return;
+				}
+				var f = arguments[len-1];
+				if ( typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function' ) {
+					console.log( 'Not running function __gaTracker(' + arguments[0] + " ....) because you are not being tracked. " + mi_no_track_reason );
+					return;
+				}
+				try {
+					f.hitCallback();
+				} catch (ex) {
+
+				}
+			};
+			__gaTracker.create = function() {
+				return new Tracker();
+			};
+			__gaTracker.getByName = noopnullfn;
+			__gaTracker.getAll = function() {
+				return [];
+			};
+			__gaTracker.remove = noopfn;
+			window['__gaTracker'] = __gaTracker;
+					})();
+		}
+</script>
+
+<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.jpaul.me\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.2.2"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56424,55356,57342,8205,55358,56605,8205,55357,56424,55356,57340],[55357,56424,55356,57342,8203,55358,56605,8203,55357,56424,55356,57340]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script><script src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wp-emoji-release.min.js(1).download" type="text/javascript" defer=""></script>
+<script>
+					advanced_ads_ready=function(){var fns=[],listener,doc=typeof document==="object"&&document,hack=doc&&doc.documentElement.doScroll,domContentLoaded="DOMContentLoaded",loaded=doc&&(hack?/^loaded|^c/:/^loaded|^i|^c/).test(doc.readyState);if(!loaded&&doc){listener=function(){doc.removeEventListener(domContentLoaded,listener);window.removeEventListener("load",listener);loaded=1;while(listener=fns.shift())listener()};doc.addEventListener(domContentLoaded,listener);window.addEventListener("load",listener)}return function(fn){loaded?setTimeout(fn,0):fns.push(fn)}}();
+			</script><style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel="stylesheet" id="social-warfare-block-css-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/blocks.style.build.css" type="text/css" media="all">
+<link rel="stylesheet" id="wp-block-library-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/style.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="font-awesome-styles-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="a3-pvc-style-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/style.min(1).css" type="text/css" media="all">
+<link rel="stylesheet" id="junkie-shortcodes-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/junkie-shortcodes.css" type="text/css" media="all">
+<link rel="stylesheet" id="wordpress-popular-posts-css-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wpp.css" type="text/css" media="all">
+<link rel="stylesheet" id="wp-pagenavi-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/pagenavi-css.css" type="text/css" media="all">
+<link rel="stylesheet" id="spu-public-css-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/public.css" type="text/css" media="all">
+<link rel="stylesheet" id="social_warfare-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/style.min(2).css" type="text/css" media="all">
+<link rel="stylesheet" id="daily-style-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/style.min(3).css" type="text/css" media="all">
+<link rel="stylesheet" id="daily-responsive-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/responsive.css" type="text/css" media="all">
+<link rel="stylesheet" id="daily-colors-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/default.css" type="text/css" media="all">
+<link rel="stylesheet" id="a3pvc-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/pvc.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="stbCoreCSS-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/stb-core.css" type="text/css" media="all">
+<link rel="stylesheet" id="social-logos-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/social-logos.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="jetpack_css-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/jetpack.css" type="text/css" media="all">
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/jquery.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/jquery-migrate.min.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var related_posts_js_options = {"post_heading":"h4"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/related-posts.min.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var monsterinsights_frontend = {"js_events_tracking":"true","download_extensions":"doc,exe,js,pdf,ppt,tgz,zip,xls","inbound_paths":"[]","home_url":"https:\/\/www.jpaul.me","hash_tracking":"false"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/frontend.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/underscore.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/backbone.min.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var vars = {"rest_api_url":"https:\/\/www.jpaul.me\/wp-json\/pvc\/v1"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/pvc.backbone.min.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var wpp_params = {"sampling_active":"0","sampling_rate":"100","ajax_url":"https:\/\/www.jpaul.me\/wp-json\/wordpress-popular-posts\/v1\/popular-posts\/","ID":"15448","token":"fe273f3be9","debug":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wpp-4.2.0.min.js.download"></script>
+<!--[if lte IE 9]>
+<script type='text/javascript' src='https://d21ckucy4bfsb.cloudfront.net/wp-content/themes/daily3/assets/js/html5shiv.js?x27402'></script>
+<![endif]-->
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/jquery.stb.min.js.download"></script>
+<link rel="https://api.w.org/" href="https://www.jpaul.me/wp-json/">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.jpaul.me/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.jpaul.me/wp-includes/wlwmanifest.xml">
+<meta name="generator" content="WordPress 5.2.2">
+<link rel="shortlink" href="https://www.jpaul.me/?p=15448">
+<link rel="alternate" type="application/json+oembed" href="https://www.jpaul.me/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://www.jpaul.me/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F&amp;format=xml">
+
+<script type="text/javascript">
+        (function(){
+          var bsa = document.createElement('script');
+              bsa.type= 'text/javascript';
+              bsa.async = true;
+              bsa.src='//s3.buysellads.com/ac/bsa.js';
+          (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+        })();
+        </script><script type="text/javascript" async="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/bsa.js.download"></script>
+
+
+
+<script>
+"use strict";
+
+!function() {
+  var t = window.driftt = window.drift = window.driftt || [];
+  if (!t.init) {
+    if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
+    t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ], 
+    t.factory = function(e) {
+      return function() {
+        var n = Array.prototype.slice.call(arguments);
+        return n.unshift(e), t.push(n), t;
+      };
+    }, t.methods.forEach(function(e) {
+      t[e] = t.factory(e);
+    }), t.load = function(t) {
+      var e = 3e5, n = Math.ceil(new Date() / e) * e, o = document.createElement("script");
+      o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
+      var i = document.getElementsByTagName("script")[0];
+      i.parentNode.insertBefore(o, i);
+    };
+  }
+}();
+drift.SNIPPET_VERSION = '0.3.1';
+drift.load('hx65cb43pufg');
+</script>
+
+<script type="text/javascript">
+	(function(w,d,t,u,n,a,m){w['MauticTrackingObject']=n;
+		w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)},a=d.createElement(t),
+		m=d.getElementsByTagName(t)[0];a.async=1;a.src=u;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://mautic.jpaul.me/mtc.js','mt');
+
+	mt('send', 'pageview');
+</script>
+<style data-context="foundation-flickity-css">/*! Flickity v2.0.2
+http://flickity.metafizzy.co
+---------------------------------------------- */.flickity-enabled{position:relative}.flickity-enabled:focus{outline:0}.flickity-viewport{overflow:hidden;position:relative;height:100%}.flickity-slider{position:absolute;width:100%;height:100%}.flickity-enabled.is-draggable{-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.flickity-enabled.is-draggable .flickity-viewport{cursor:move;cursor:-webkit-grab;cursor:grab}.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down{cursor:-webkit-grabbing;cursor:grabbing}.flickity-prev-next-button{position:absolute;top:50%;width:44px;height:44px;border:none;border-radius:50%;background:#fff;background:hsla(0,0%,100%,.75);cursor:pointer;-webkit-transform:translateY(-50%);transform:translateY(-50%)}.flickity-prev-next-button:hover{background:#fff}.flickity-prev-next-button:focus{outline:0;box-shadow:0 0 0 5px #09f}.flickity-prev-next-button:active{opacity:.6}.flickity-prev-next-button.previous{left:10px}.flickity-prev-next-button.next{right:10px}.flickity-rtl .flickity-prev-next-button.previous{left:auto;right:10px}.flickity-rtl .flickity-prev-next-button.next{right:auto;left:10px}.flickity-prev-next-button:disabled{opacity:.3;cursor:auto}.flickity-prev-next-button svg{position:absolute;left:20%;top:20%;width:60%;height:60%}.flickity-prev-next-button .arrow{fill:#333}.flickity-page-dots{position:absolute;width:100%;bottom:-25px;padding:0;margin:0;list-style:none;text-align:center;line-height:1}.flickity-rtl .flickity-page-dots{direction:rtl}.flickity-page-dots .dot{display:inline-block;width:10px;height:10px;margin:0 8px;background:#333;border-radius:50%;opacity:.25;cursor:pointer}.flickity-page-dots .dot.is-selected{opacity:1}</style><style data-context="foundation-slideout-css">.slideout-menu{position:fixed;left:0;top:0;bottom:0;right:auto;z-index:0;width:256px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none}.slideout-menu.pushit-right{left:auto;right:0}.slideout-panel{position:relative;z-index:1;will-change:transform}.slideout-open,.slideout-open .slideout-panel,.slideout-open body{overflow:hidden}.slideout-open .slideout-menu{display:block}.pushit{display:none}</style>
+<link rel="dns-prefetch" href="https://jetpack.wordpress.com/">
+<link rel="dns-prefetch" href="https://s0.wp.com/">
+<link rel="dns-prefetch" href="https://s1.wp.com/">
+<link rel="dns-prefetch" href="https://s2.wp.com/">
+<link rel="dns-prefetch" href="https://public-api.wordpress.com/">
+<link rel="dns-prefetch" href="https://0.gravatar.com/">
+<link rel="dns-prefetch" href="https://1.gravatar.com/">
+<link rel="dns-prefetch" href="https://2.gravatar.com/">
+<link rel="dns-prefetch" href="https://widgets.wp.com/">
+<link rel="dns-prefetch" href="https://v0.wordpress.com/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to build a Raspberry Pi Serial Console Server with ser2net">
+<meta property="og:url" content="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/">
+<meta property="og:description" content="If you’ve ever built a Cisco CCNA lab or some other hardware lab that has serial console ports, there is a good chance you sat within a few feet of the gear with a serial cable to your comput…">
+<meta property="article:published_time" content="2019-01-29T21:59:58+00:00">
+<meta property="article:modified_time" content="2019-01-29T22:00:07+00:00">
+<meta property="og:site_name" content="Justin&#39;s IT Blog">
+<meta property="og:image" content="https://www.jpaul.me/wp-content/uploads/2019/01/raspberry-400x400.jpg">
+<meta property="og:image:width" content="400">
+<meta property="og:image:height" content="400">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:creator" content="@recklessop">
+<meta name="twitter:site" content="@recklessop">
+<meta name="twitter:text:title" content="How to build a Raspberry Pi Serial Console Server with ser2net">
+<meta name="twitter:image" content="https://www.jpaul.me/wp-content/uploads/2019/01/raspberry-400x400.jpg?w=640">
+<meta name="twitter:card" content="summary_large_image">
+
+<style type="text/css" id="syntaxhighlighteranchor"></style>
+<link rel="icon" href="https://www.jpaul.me/wp-content/uploads/2015/07/jp-42x42.jpg?x27402" sizes="32x32">
+<link rel="icon" href="https://www.jpaul.me/wp-content/uploads/2015/07/jp-200x200.jpg?x27402" sizes="192x192">
+<link rel="apple-touch-icon-precomposed" href="https://www.jpaul.me/wp-content/uploads/2015/07/jp-200x200.jpg?x27402">
+<meta name="msapplication-TileImage" content="https://www.jpaul.me/wp-content/uploads/2015/07/jp-300x300.jpg">
+<style>.ios7.web-app-mode.has-fixed header{ background-color: rgba(49,101,148,.88);}</style> <style type="text/css" id="wp-custom-css">
+			One of the things that I don't work with much is tape... in any fashion. However while working on a project I was asked how Veeam did with tape out. I tried to think of where I had used tape with Veeam before and I couldn't think of a single instance... which is probably why I have installed so many dedupe appliances :) . So I did the only thing a real geek would do... I started looking for a tape drive for my home lab.
+
+You would think, since people have been saying that tape is dead, that I would be able to pick up something pretty cheap. However I soon figured out that quite the opposite was true if I wanted anything with a fiber channel interface. What to do?
+
+What about VTL? Both Data Domain and HP StoreOnce provide VTL features, but on the StoreOnce VSA you do not need a license to enable it. So I logged into one of the StoreOnce VSA's that I had already deployed and started messing around. It took very little effort before my Veeam server had a fully functional MSL 2024 attached... and the best part is that it didn't cost me anything!
+
+So the purpose of this article is to show how to get an HP StoreOnce VSA with the VTL options talking to Veeam Backup and Replication, I won't cover anything in terms of creating jobs or best practices inside of Veeam because frankly I don't yet have the experience to be making those recommendations, but as I am able to play around with this more I will share what I learn. Also for owners of Data Domain and / or HP StoreOnce, this article should not be considered a way to utilize those products in a production environment. I have to think that writing data directly to NFS/CIFS on these devices would be better than going through the VTL features. (The only thing I'm thinking that might be useful for this though is extended retention where you want Veeam to keep GFS copies, but after I look into that more I will create a separate article for that).
+Getting the HP StoreOnce side ready
+After deploying the StoreOnce VSA login to it and click on the VTL option. It should have "Auto Create" enabled.
+
+
+
+If it is not enabled, click 'Edit' and then enable the option. This is all that is needed on the StoreOnce side ot get started, we could however manually create a VTL, but unless you want to copy and paste IQN's it's easier to just let it auto create one, and then we can edit it later.
+iSCSI configuration on Veeam Server
+The VTL features of StoreOnce VSA rely on an iSCSI connection. So the first thing we need to do on the Veeam server is enable the iSCSI initiator (if it isn't already enabled), you can enable it by simply opening the iSCSI Initiator in Control Panel.
+
+Then enter the IP address of the HP StoreOnce VSA in the Target box and click 'Quick Connect'. Then in the Discovered targets area click each of the targets and click connect (at least the ones that are related to HP StorageOnce).
+
+
+
+By default you should have one drive and once robot listed in the targets window. After connecting the targets you can check Windows device manager to see if they show up. You are looking for a "Media Changer" and an "unknown device".
+
+
+
+Before we install the drivers for these devices we will want to go back over to the StoreOnce VSA and change properties of the VTL to emulate an MSL 2024 (or whatever MSL you want to play with).
+Configuring VTL settings on StoreOnce
+Click on the VTL item on the left to expand it then select 'Library'. On the right side of the page you should now see the VTL that was auto created when you connected to the VTL iSCSI targets.
+
+
+
+By default it's emulating a generic drive, but I wanted it to emulate the same MSL that I was looking at on eBay. So if you click on the library then down at the very bottom of the page select 'Edit'. Then select the "MSL G3 Series 2x24" emulation type. You can also select how many tape's you would like the VTL to see too, by default it sets the max number for the emulation type. Click save.
+
+Once this has been changed we can do back over to Windows and install the HP MSL drivers and then do the actual Veeam Configuration.
+Installing MSL Drivers on Veeam Tape Server
+Some backup software wants you to use only their drivers, but Veeam is different, they aren't in the driver business so they recommend you use the manufacturer's drivers. So for the HP MSL series that we are emulating you need to download the drivers from  http://h18006.www1.hp.com/products/storageworks/tapecompatibility.html. FYI I would fully expect this link to break once the HP/Hewlet Packard split happens. So you might have to just google "HP Tape compatibility and Tools".
+
+
+
+Once you get to this page click on the "Hp StoreEver Tape Drivers" link.
+
+
+
+At the time of this driving the driver version was 4.0.0 and the file name is cp023805.exe. Download the drivers, and then extract them to a folder somewhere on the Veeam server. I say extract because for whatever reason HP has decided to not allow any of their tape drivers to install in a virtual environment... HP YOU SHOULD FIX THIS...
+
+Here is the error you can expect if you click install.
+
+
+
+So after extracting the files to somewhere on the server you can head back into Device Manager and click on the Robot or the drive and select 'Update Driver'. Then navigate to the folder where you extracted the drivers, and select the OS folder that matches your Veeam server. Then click next through all the pretty boxes until you see a screen that looks like this:
+
+
+
+Then repeat for the other related device... either the drive or the robot:
+
+
+
+Then you have all the drivers installed that you need. Now we can open Veeam and configure it to see the MSL.
+Veeam Tape Configuration
+After you get Veeam B&amp;R opened up you can navigate to the Tape Infrastructure area. The first thing we need to do is select "Add a Tape Server" from the list. I installed the iSCSI VTL on the server listed as "This Server", but if you are planning to dedicate a server to just doing tape, then select the appropriate server from the list.
+
+
+
+If there are restrictions on traffic for this tape server you can set those up on on this page otherwise click next
+
+
+
+Typical Veeam review page... next.
+
+
+
+Here you can monitor the progress of the tape agent install.. then click next.
+
+
+
+Normally I don't show the Finish page, but this one contains an important check box. The "Start tape library inventory" box...make sure that is checked so that you get an initial inventory of your tapes.
+
+
+
+&nbsp;
+
+When you first open you all of the new things on the left side your tapes will appear under an unknown media pool, but as the inventory happens they will move over to the Free media pool. Once all of the tapes are in the free media pool you are ready to start doing Veeam backup's to tape!
+
+
+
+Lastly I wanted to send a big THANK YOU out to the HP Storage team for creating the StoreOnce VSA... If I didn't have it it would be much harder to learn and to do my job, so Thank You!		</style>
+<script type="text/javascript" id="_bsap_js_52024be70c3a0cf1b0de39fb0cee2593" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/s_52024be70c3a0cf1b0de39fb0cee2593.js.download" async="async"></script><link rel="stylesheet" type="text/css" id="gravatar-card-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/hovercard.min(1).css"><link rel="stylesheet" type="text/css" id="gravatar-card-services-css" href="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/services.min(1).css"><style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style><script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/pro.js.download" id="_bsap_premium_pro"></script><script type="text/javascript" id="_bsaPRO_js" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/saved_resource(5)" async="async"></script></head>
+<body class="post-template-default single single-post postid-15448 single-format-standard group-blog layout-2c-l" itemscope="" itemtype="http://schema.org/Blog" data-gr-c-s-loaded="true" style="padding-top: 0px; padding-bottom: 50px;">
+
+<script type="text/javascript">
+<script type="text/javascript">
+(function(){
+  var bsa = document.createElement('script');
+     bsa.type = 'text/javascript';
+     bsa.async = true;
+     bsa.src = '//s3.buysellads.com/ac/bsa.js';
+  (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+})();
+</script>
+
+<div id="page" class="hfeed site">
+<header id="masthead" class="site-header container clearfix" role="banner" itemscope="itemscope" itemtype="http://schema.org/WPHeader">
+<div id="primary-bar"><div class="slicknav_menu"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" aria-haspopup="true" tabindex="0" class="slicknav_btn slicknav_collapsed" data-slimstat="5" style="outline: none;"><span class="slicknav_menutxt">PAGES</span><span class="slicknav_icon"><span class="slicknav_icon-bar"></span><span class="slicknav_icon-bar"></span><span class="slicknav_icon-bar"></span></span></a><ul class="slicknav_nav slicknav_hidden" aria-hidden="true" role="menu" style="display: none;"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4550"><a href="https://www.jpaul.me/about/" role="menuitem" tabindex="-1" data-slimstat="5">About</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4549"><a href="https://www.jpaul.me/advertise/" role="menuitem" tabindex="-1" data-slimstat="5">Advertise</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11572"><a href="https://www.jpaul.me/ask-a-question/" role="menuitem" tabindex="-1" data-slimstat="5">Ask a Question!</a></li>
+</ul></div>
+<div class="container">
+<nav id="primary-nav" class="main-navigation" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+<ul id="primary-menu" class="primary-menu sf-menu sf-js-enabled sf-arrows"><li id="menu-item-4550" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4550"><a href="https://www.jpaul.me/about/" data-slimstat="5">About</a></li>
+<li id="menu-item-4549" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4549"><a href="https://www.jpaul.me/advertise/" data-slimstat="5">Advertise</a></li>
+<li id="menu-item-11572" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11572"><a href="https://www.jpaul.me/ask-a-question/" data-slimstat="5">Ask a Question!</a></li>
+</ul>
+</nav>
+<div class="header-social"></div>
+</div>
+</div>
+<div id="logo" itemscope="" itemtype="http://schema.org/Brand">
+<a href="https://www.jpaul.me/" itemprop="url" rel="home" data-slimstat="5">
+<img itemprop="logo" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/logo.png" alt="Justin&#39;s IT Blog">
+</a>
+</div>
+<div class="clearfix"></div>
+<div id="secondary-bar" class="clearfix"><div class="slicknav_menu"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" aria-haspopup="true" tabindex="0" class="slicknav_btn slicknav_collapsed" data-slimstat="5" style="outline: none;"><span class="slicknav_menutxt">CATEGORIES</span><span class="slicknav_icon"><span class="slicknav_icon-bar"></span><span class="slicknav_icon-bar"></span><span class="slicknav_icon-bar"></span></span></a><ul class="slicknav_nav slicknav_hidden" aria-hidden="true" role="menu" style="display: none;"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4571"><a href="http://jpaul.me/" role="menuitem" tabindex="-1" data-slimstat="5">Home</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-11111 slicknav_collapsed slicknav_parent"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" role="menuitem" aria-haspopup="true" tabindex="-1" class="slicknav_item slicknav_row" data-slimstat="5" style="outline: none;"><a href="https://www.jpaul.me/partners/" class="sf-with-ul" tabindex="-1" data-slimstat="5">Partners</a>
+<span class="slicknav_arrow">►</span></a><ul class="sub-menu slicknav_hidden" style="display: none;" role="menu" aria-hidden="true">
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11796"><a href="https://www.jpaul.me/partners/amazon/" role="menuitem" tabindex="-1" data-slimstat="5">Amazon</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11121"><a href="https://www.jpaul.me/partners/turbonomic/" role="menuitem" tabindex="-1" data-slimstat="5">Turbonomic</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11159"><a href="https://www.jpaul.me/partners/vembu/" role="menuitem" tabindex="-1" data-slimstat="5">Vembu</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11120"><a href="https://www.jpaul.me/partners/zerto/" role="menuitem" tabindex="-1" data-slimstat="5">Zerto</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-13227"><a href="https://www.jpaul.me/partners/previous-partners/" role="menuitem" tabindex="-1" data-slimstat="5">Previous Partners</a>
+<ol>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-12441"><a href="https://www.jpaul.me/partners/previous-partners/nakivo/" role="menuitem" tabindex="-1" data-slimstat="5">Nakivo</a></li>
+</ol>
+</li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10506"><a href="https://www.jpaul.me/home-lab/" role="menuitem" tabindex="-1" data-slimstat="5">Home Lab</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15464"><a href="https://www.jpaul.me/zplanner/" role="menuitem" tabindex="-1" data-slimstat="5">zPlanner</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-13212 slicknav_collapsed slicknav_parent"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" role="menuitem" aria-haspopup="true" tabindex="-1" class="slicknav_item slicknav_row" data-slimstat="5" style="outline: none;"><a href="https://www.jpaul.me/azure/" class="sf-with-ul" tabindex="-1" data-slimstat="5">Azure Migration Tips</a>
+<span class="slicknav_arrow">►</span></a><ul class="sub-menu slicknav_hidden" style="display: none;" role="menu" aria-hidden="true">
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13224"><a href="https://www.jpaul.me/azure/centos-6-azure-tips/" role="menuitem" tabindex="-1" data-slimstat="5">CentOS 6 Azure Tips</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13223"><a href="https://www.jpaul.me/azure/centos-7-azure-tips/" role="menuitem" tabindex="-1" data-slimstat="5">CentOS 7 Azure Tips</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13248"><a href="https://www.jpaul.me/azure/debian-azure-tips/" role="menuitem" tabindex="-1" data-slimstat="5">Debian Azure Tips</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13222"><a href="https://www.jpaul.me/azure/ubuntu-azure-tips/" role="menuitem" tabindex="-1" data-slimstat="5">Ubuntu Azure Tips</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15440"><a href="https://www.jpaul.me/azure/ubuntu-16-04-azure-tips/" role="menuitem" tabindex="-1" data-slimstat="5">Ubuntu 16.04 Azure Tips</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13245"><a href="https://www.jpaul.me/azure/windows-2008-azure-tips/" role="menuitem" tabindex="-1" data-slimstat="5">Windows 2008 Azure Tips</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-12084 slicknav_collapsed slicknav_parent"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" role="menuitem" aria-haspopup="true" tabindex="-1" class="slicknav_item slicknav_row" data-slimstat="5" style="outline: none;"><a href="https://www.jpaul.me/category/backup-recovery/" class="sf-with-ul" tabindex="-1" data-slimstat="5">Backup and Recovery</a>
+<span class="slicknav_arrow">►</span></a><ul class="sub-menu slicknav_hidden" style="display: none;" role="menu" aria-hidden="true">
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12087"><a href="https://www.jpaul.me/category/backup-recovery/data-domain/" role="menuitem" tabindex="-1" data-slimstat="5">Data Domain</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12088"><a href="https://www.jpaul.me/category/backup-recovery/exagrid/" role="menuitem" tabindex="-1" data-slimstat="5">Exagrid</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12089"><a href="https://www.jpaul.me/category/backup-recovery/hp-storeonce/" role="menuitem" tabindex="-1" data-slimstat="5">HP StoreOnce</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12090"><a href="https://www.jpaul.me/category/backup-recovery/veeam-2/" role="menuitem" tabindex="-1" data-slimstat="5">Veeam</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12091"><a href="https://www.jpaul.me/category/backup-recovery/zerto/" role="menuitem" tabindex="-1" data-slimstat="5">Zerto</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor menu-item-has-children menu-item-12105 slicknav_collapsed slicknav_parent"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" role="menuitem" aria-haspopup="true" tabindex="-1" class="slicknav_item slicknav_row" data-slimstat="5" style="outline: none;"><a href="https://www.jpaul.me/category/software/" class="sf-with-ul" tabindex="-1" data-slimstat="5">Software</a>
+<span class="slicknav_arrow">►</span></a><ul class="sub-menu slicknav_hidden" style="display: none;" role="menu" aria-hidden="true">
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-12106"><a href="https://www.jpaul.me/category/software/linux-related/" role="menuitem" tabindex="-1" data-slimstat="5">Linux Related</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12107"><a href="https://www.jpaul.me/category/software/microsoft/" role="menuitem" tabindex="-1" data-slimstat="5">Microsoft</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12108"><a href="https://www.jpaul.me/category/software/opensource/" role="menuitem" tabindex="-1" data-slimstat="5">Open Source Projects</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12115"><a href="https://www.jpaul.me/category/powercli/" role="menuitem" tabindex="-1" data-slimstat="5">PowerCLI</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13322"><a href="https://www.jpaul.me/ubiquiti-edgerouter-notes/" role="menuitem" tabindex="-1" data-slimstat="5">Ubiquiti EdgeRouter</a></li>
+</ul></div>
+<div class="container">
+<nav id="secondary-nav" class="main-navigation" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+<ul id="secondary-menu" class="secondary-menu sf-menu sf-js-enabled sf-arrows"><li id="menu-item-4571" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4571"><a href="http://jpaul.me/" data-slimstat="5">Home</a></li>
+<li id="menu-item-11111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-11111"><a href="https://www.jpaul.me/partners/" class="sf-with-ul" data-slimstat="5">Partners</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-11796" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11796"><a href="https://www.jpaul.me/partners/amazon/" data-slimstat="5">Amazon</a></li>
+<li id="menu-item-11121" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11121"><a href="https://www.jpaul.me/partners/turbonomic/" data-slimstat="5">Turbonomic</a></li>
+<li id="menu-item-11159" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11159"><a href="https://www.jpaul.me/partners/vembu/" data-slimstat="5">Vembu</a></li>
+<li id="menu-item-11120" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11120"><a href="https://www.jpaul.me/partners/zerto/" data-slimstat="5">Zerto</a></li>
+<li id="menu-item-13227" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-13227"><a href="https://www.jpaul.me/partners/previous-partners/" data-slimstat="5">Previous Partners</a>
+<ol>
+<li id="menu-item-12441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-12441"><a href="https://www.jpaul.me/partners/previous-partners/nakivo/" data-slimstat="5">Nakivo</a></li>
+</ol>
+</li>
+</ul>
+</li>
+<li id="menu-item-10506" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10506"><a href="https://www.jpaul.me/home-lab/" data-slimstat="5">Home Lab</a></li>
+<li id="menu-item-15464" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15464"><a href="https://www.jpaul.me/zplanner/" data-slimstat="5">zPlanner</a></li>
+<li id="menu-item-13212" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-13212"><a href="https://www.jpaul.me/azure/" class="sf-with-ul" data-slimstat="5">Azure Migration Tips</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-13224" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13224"><a href="https://www.jpaul.me/azure/centos-6-azure-tips/" data-slimstat="5">CentOS 6 Azure Tips</a></li>
+<li id="menu-item-13223" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13223"><a href="https://www.jpaul.me/azure/centos-7-azure-tips/" data-slimstat="5">CentOS 7 Azure Tips</a></li>
+<li id="menu-item-13248" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13248"><a href="https://www.jpaul.me/azure/debian-azure-tips/" data-slimstat="5">Debian Azure Tips</a></li>
+<li id="menu-item-13222" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13222"><a href="https://www.jpaul.me/azure/ubuntu-azure-tips/" data-slimstat="5">Ubuntu Azure Tips</a></li>
+<li id="menu-item-15440" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15440"><a href="https://www.jpaul.me/azure/ubuntu-16-04-azure-tips/" data-slimstat="5">Ubuntu 16.04 Azure Tips</a></li>
+<li id="menu-item-13245" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13245"><a href="https://www.jpaul.me/azure/windows-2008-azure-tips/" data-slimstat="5">Windows 2008 Azure Tips</a></li>
+</ul>
+</li>
+<li id="menu-item-12084" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-12084"><a href="https://www.jpaul.me/category/backup-recovery/" class="sf-with-ul" data-slimstat="5">Backup and Recovery</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-12087" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12087"><a href="https://www.jpaul.me/category/backup-recovery/data-domain/" data-slimstat="5">Data Domain</a></li>
+<li id="menu-item-12088" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12088"><a href="https://www.jpaul.me/category/backup-recovery/exagrid/" data-slimstat="5">Exagrid</a></li>
+<li id="menu-item-12089" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12089"><a href="https://www.jpaul.me/category/backup-recovery/hp-storeonce/" data-slimstat="5">HP StoreOnce</a></li>
+<li id="menu-item-12090" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12090"><a href="https://www.jpaul.me/category/backup-recovery/veeam-2/" data-slimstat="5">Veeam</a></li>
+<li id="menu-item-12091" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12091"><a href="https://www.jpaul.me/category/backup-recovery/zerto/" data-slimstat="5">Zerto</a></li>
+</ul>
+</li>
+<li id="menu-item-12105" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor menu-item-has-children menu-item-12105"><a href="https://www.jpaul.me/category/software/" class="sf-with-ul" data-slimstat="5">Software</a>
+<ul class="sub-menu" style="display: none;">
+<li id="menu-item-12106" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-12106"><a href="https://www.jpaul.me/category/software/linux-related/" data-slimstat="5">Linux Related</a></li>
+<li id="menu-item-12107" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12107"><a href="https://www.jpaul.me/category/software/microsoft/" data-slimstat="5">Microsoft</a></li>
+<li id="menu-item-12108" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12108"><a href="https://www.jpaul.me/category/software/opensource/" data-slimstat="5">Open Source Projects</a></li>
+<li id="menu-item-12115" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12115"><a href="https://www.jpaul.me/category/powercli/" data-slimstat="5">PowerCLI</a></li>
+</ul>
+</li>
+<li id="menu-item-13322" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-13322"><a href="https://www.jpaul.me/ubiquiti-edgerouter-notes/" data-slimstat="5">Ubiquiti EdgeRouter</a></li>
+</ul>
+</nav>
+<div class="search-form">
+<form action="https://www.jpaul.me/" role="search">
+<input type="search" class="search-field field" placeholder="Press enter to search …" value="" name="s" title="Search for:">
+<button type="submit" name="submit"><i class="fa fa-search"></i></button>
+</form>
+</div>
+</div>
+</div>
+</header>
+<span class="header-date">Tuesday, 25 June 2019</span>
+<div id="breadcrumbs">
+<div class="breadcrumb-trail breadcrumbs" itemprop="breadcrumb">
+<span class="trail-before">You are here:</span>
+<span class="trail-begin"><a href="https://www.jpaul.me/" title="Justin&#39;s IT Blog" rel="home" data-slimstat="5">Home</a></span>
+<span class="sep"><i class="fa fa-caret-right"></i></span> <a href="https://www.jpaul.me/2019/" data-slimstat="5">2019</a>
+<span class="sep"><i class="fa fa-caret-right"></i></span> <a href="https://www.jpaul.me/2019/01/" data-slimstat="5">January</a>
+<span class="sep"><i class="fa fa-caret-right"></i></span> <span class="trail-end">How to build a Raspberry Pi Serial Console Server with ser2net</span>
+</div>
+</div>
+<div id="content" class="site-content column" style="height: 5548px;">
+<section id="primary" class="content-area column" style="height: 5548px;">
+<main id="main" class="site-main column" role="main" style="height: 5548px;">
+<article id="post-15448" class="post-15448 post type-post status-publish format-standard has-post-thumbnail hentry category-hardware category-home-lab category-linux-related tag-cisco tag-linux tag-raspberrypi entry" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<header class="entry-header">
+<h1 class="entry-title" itemprop="headline">How to build a Raspberry Pi Serial Console Server with ser2net</h1>
+<div class="entry-meta">
+<span class="posted-on">Posted on January 29, 2019</span><span class="byline"> by <span class="author vcard" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person"><a class="url fn n" href="https://www.jpaul.me/author/admin/" itemprop="url" data-slimstat="5"><span itemprop="name">Justin Paul</span></a></span></span>
+<span class="meta-sep">|</span>
+<span class="comments-link"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#comments" itemprop="discussionURL" data-slimstat="5">4 Comments</a></span>
+</div>
+</header>
+<div class="entry-content" itemprop="articleBody">
+<p>If you’ve ever built a Cisco CCNA lab or some other hardware lab that has serial console ports, there is a good chance you sat within a few feet of the gear with a serial cable to your computer while working on it. How fun was that?!?</p>
+<p>Recently a friend started studying for the CCNA exam and I started thinking that there had to be a way to use a Raspberry Pi to put the console ports on the network. Sure you could log in to the pi, then run telnet from the pi, but what if I don’t want to login? Sure enough, there is a project called ser2net that does just that. So I ordered a multi-port serial adapter and dug out an old Pi2 B+ to make it happen!</p>
+<h2>The Hardware</h2>
+<p>You can probably use any <a rel="noreferrer noopener" aria-label="Raspberry Pi (opens in a new tab)" href="https://amzn.to/2FVvRzm" target="_blank" data-slimstat="5">Raspberry Pi</a> model, so long as it has USB ports, I had a Raspberry Pi 2 B+ sitting around so that’s what I’m using. (D<g class="gr_ gr_51 gr-alert gr_spell gr_inline_cards gr_run_anim ContextualSpelling ins-del multiReplace" id="51" data-gr-id="51">on’t</g> forget a power supply and case too.)</p>
+<p>You will also need a <a rel="noreferrer noopener" aria-label="USB to serial adapter (opens in a new tab)" href="https://amzn.to/2Sd817N" target="_blank" data-slimstat="5">USB to serial adapter</a>. I went with the <a rel="noreferrer noopener" aria-label="UGREEN 4 port model (opens in a new tab)" href="https://amzn.to/2DHyMsU" target="_blank" data-slimstat="5">UGREEN 4 port model</a> that is pretty cheap. You could also do one or more single port adapters, but keep in mind the Pi’s limited USB power budget.</p>
+<figure class="wp-block-image"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/IMG-1776-1024x768.jpg" alt="" class="wp-image-15450" srcset="https://www.jpaul.me/wp-content/uploads/2019/01/IMG-1776-1024x768.jpg 1024w, https://www.jpaul.me/wp-content/uploads/2019/01/IMG-1776-300x225.jpg 300w, https://www.jpaul.me/wp-content/uploads/2019/01/IMG-1776-768x576.jpg 768w, https://www.jpaul.me/wp-content/uploads/2019/01/IMG-1776-50x38.jpg 50w" sizes="(max-width: 1024px) 100vw, 1024px"><figcaption>My Hardware setup</figcaption></figure>
+<p>Lastly you will need Cisco Console cables, or EMC Serial Cables, or whatever cables are required for your device.</p>
+<h2>The Software</h2>
+<p>I’m using Raspbian, mostly right out of the box. In fact we only need to add one piece of software to make this project work.</p>
+<p>To update your Pi and install ser2net use the commands below:</p>
+<pre class="wp-block-code"><code>sudo apt update
+sudo apt upgrade -y
+sudo apt install ser2net -y</code></pre>
+<h2>Serial Port discovery</h2>
+<p>Before we can configure ser2net we need to figure out where our serial adapters are listening. Normally serial ports are /dev/ttyS0 or ttyS1, but because we are using USB adapters the may show up as /dev/ttyUSB0 and ttyUSB1 etc.</p>
+<p>Use this command to search for yours:</p>
+<pre class="wp-block-code"><code>dmesg | grep tty</code></pre>
+<p>You’ll see something like this:</p>
+<figure class="wp-block-image"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/discovery-1024x406.png" alt="" class="wp-image-15453" srcset="https://www.jpaul.me/wp-content/uploads/2019/01/discovery-1024x406.png 1024w, https://www.jpaul.me/wp-content/uploads/2019/01/discovery-300x119.png 300w, https://www.jpaul.me/wp-content/uploads/2019/01/discovery-768x304.png 768w, https://www.jpaul.me/wp-content/uploads/2019/01/discovery-50x20.png 50w, https://www.jpaul.me/wp-content/uploads/2019/01/discovery.png 1050w" sizes="(max-width: 1024px) 100vw, 1024px"><figcaption>discovered USB to Serial ports</figcaption></figure>
+<p>As you can see I have my 4 port adapter plugged in, as well as my <a rel="noreferrer noopener" aria-label="Adafruit USB to TTL Serial Cable (opens in a new tab)" href="https://www.adafruit.com/product/954" target="_blank" data-slimstat="5">Adafruit USB to TTL Serial Cable</a> too. With this <g class="gr_ gr_31 gr-alert gr_gramm gr_inline_cards gr_run_anim Punctuation only-ins replaceWithoutSep" id="31" data-gr-id="31">information</g> we can configure our ser2net.conf file.</p>
+<h2>Configuration</h2>
+<p>When you install ser2net via apt it puts the configuration file in /etc. To edit it you can use nano with is already on your Pi.</p>
+<pre class="wp-block-code"><code>sudo nano /etc/ser2net.conf</code></pre>
+<p>Inside you will find some default configuration lines at the bottom of the config file. We can easily edit these to meet our needs.</p>
+<p>For my 4 port serial adapter, going to Cisco routers and switches (which use 9600 8N1 serial parameters), my file looks like this.</p>
+<pre class="wp-block-code"><code>3000:telnet:600:/dev/ttyUSB0:9600 8DATABITS NONE 1STOPBIT banner
+3001:telnet:600:/dev/ttyUSB1:9600 8DATABITS NONE 1STOPBIT banner
+3002:telnet:600:/dev/ttyUSB2:9600 8DATABITS NONE 1STOPBIT banner
+3004:telnet:600:/dev/ttyUSB3:9600 8DATABITS NONE 1STOPBIT banner</code></pre>
+<p>Here is a screenshot too (note that the ttyUSB4 is my adafruit adapter.</p>
+<figure class="wp-block-image"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/ser2net.conf_-1024x583.png" alt="" class="wp-image-15454" srcset="https://www.jpaul.me/wp-content/uploads/2019/01/ser2net.conf_-1024x583.png 1024w, https://www.jpaul.me/wp-content/uploads/2019/01/ser2net.conf_-300x171.png 300w, https://www.jpaul.me/wp-content/uploads/2019/01/ser2net.conf_-768x437.png 768w, https://www.jpaul.me/wp-content/uploads/2019/01/ser2net.conf_-50x28.png 50w, https://www.jpaul.me/wp-content/uploads/2019/01/ser2net.conf_.png 1050w" sizes="(max-width: 1024px) 100vw, 1024px"><figcaption>ser2net.conf for cisco hardware</figcaption></figure>
+<p style="text-align:left">So this configuration will let us telnet to our raspberry pi on the ports specified. Those telnet sessions will be forwarded to our serial ports.</p>
+<p>So on my mac I can type</p>
+<pre class="wp-block-code"><code>telnet raspberrypi.local 3000</code></pre>
+<p>It will connect me to whatever serial device is listening on /dev/ttyUSB0!</p>
+<h2>Conclusion</h2>
+<p>You can use this setup for anything that has a serial connection. IPMI servers, Routers, Switches, PLC’s, etc etc… </p>
+<p>The only downside that I have seen, which isn’t a big deal in a lab, is that there is no authentication involved. So anyone who knows the connection parameters (telnet IPAddress Port) will have access to the serial device listening.</p>
+<p>If security is a concern then I would just skip the ser2net program, and ssh into the pi, and run screen or cu directly to /dev/ttyUSB0 or something.</p>
+<p><strong>Happy Homelabing!</strong></p>
+<div class="pvc_clear"></div><p id="pvc_stats_15448" class="pvc_stats  pvc_load_by_ajax_update" data-element-id="15448" style=""><span>
+    <i class="fa fa-bar-chart pvc-stats-icon medium" aria-hidden="true"></i> 
+	
+		2623 total views,
+		
+			4 views today
+		
+	
+	</span></p><div class="pvc_clear"></div><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-15448" class="share-twitter sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=twitter&amp;nb=1" target="_blank" title="Click to share on Twitter" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Twitter (Opens in new window)</span></a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-15448" class="share-facebook sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=facebook&amp;nb=1" target="_blank" title="Click to share on Facebook" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Facebook (Opens in new window)</span></a></li><li class="share-linkedin"><a rel="nofollow noopener noreferrer" data-shared="sharing-linkedin-15448" class="share-linkedin sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=linkedin&amp;nb=1" target="_blank" title="Click to share on LinkedIn" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on LinkedIn (Opens in new window)</span></a></li><li class="share-reddit"><a rel="nofollow noopener noreferrer" data-shared="" class="share-reddit sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=reddit&amp;nb=1" target="_blank" title="Click to share on Reddit" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Reddit (Opens in new window)</span></a></li><li class="share-pinterest"><a rel="nofollow noopener noreferrer" data-shared="sharing-pinterest-15448" class="share-pinterest sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=pinterest&amp;nb=1" target="_blank" title="Click to share on Pinterest" data-slimstat="5"><span><span class="share-count">1</span></span><span class="sharing-screen-reader-text">Click to share on Pinterest (Opens in new window)<span class="share-count">1</span></span></a></li><li class="share-print"><a rel="nofollow noopener noreferrer" data-shared="" class="share-print sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#print" target="_blank" title="Click to print" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to print (Opens in new window)</span></a></li><li class="share-email share-service-visible"><a rel="nofollow noopener noreferrer" data-shared="" class="share-email sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=email&amp;nb=1" target="_blank" title="Click to email this to a friend" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to email this to a friend (Opens in new window)</span></a></li><li class="share-tumblr"><a rel="nofollow noopener noreferrer" data-shared="" class="share-tumblr sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=tumblr&amp;nb=1" target="_blank" title="Click to share on Tumblr" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Tumblr (Opens in new window)</span></a></li><li class="share-jetpack-whatsapp"><a rel="nofollow noopener noreferrer" data-shared="" class="share-jetpack-whatsapp sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=jetpack-whatsapp&amp;nb=1" target="_blank" title="Click to share on WhatsApp" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on WhatsApp (Opens in new window)</span></a></li><li class="share-pocket"><a rel="nofollow noopener noreferrer" data-shared="" class="share-pocket sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=pocket&amp;nb=1" target="_blank" title="Click to share on Pocket" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Pocket (Opens in new window)</span></a></li><li class="share-skype"><a rel="nofollow noopener noreferrer" data-shared="sharing-skype-15448" class="share-skype sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=skype&amp;nb=1" target="_blank" title="Click to share on Skype" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Skype (Opens in new window)</span></a></li><li class="share-telegram"><a rel="nofollow noopener noreferrer" data-shared="" class="share-telegram sd-button share-icon no-text" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/?share=telegram&amp;nb=1" target="_blank" title="Click to share on Telegram" data-slimstat="5"><span></span><span class="sharing-screen-reader-text">Click to share on Telegram (Opens in new window)</span></a></li><li class="share-end"></li></ul></div></div></div><div class="swp_social_panel swp_horizontal_panel swp_flat_fresh  swp_default_full_color swp_individual_full_color swp_other_full_color scale-100  scale-" data-min-width="1100" data-float-color="#ffffff" data-float="bottom" data-float-mobile="bottom" data-transition="slide"><div class="nc_tweetContainer swp_share_button swp_twitter" data-network="twitter"><a class="nc_tweet swp_share_link" rel="nofollow noreferrer noopener" target="_blank" href="https://twitter.com/intent/tweet?text=How+to+build+a+Raspberry+Pi+Serial+Console+Server+with+ser2net&amp;url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F&amp;via=recklessop" data-link="https://twitter.com/intent/tweet?text=How+to+build+a+Raspberry+Pi+Serial+Console+Server+with+ser2net&amp;url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F&amp;via=recklessop" data-slimstat="5"><span class="swp_count swp_hide" style="transition: padding 0.1s linear 0s;"><span class="iconFiller"><span class="spaceManWilly"><i class="sw swp_twitter_icon"></i><span class="swp_share">Tweet</span></span></span></span></a></div><div class="nc_tweetContainer swp_share_button swp_pinterest" data-network="pinterest"><a rel="nofollow noreferrer noopener" class="nc_tweet swp_share_link noPop" onclick="var e=document.createElement(&#39;script&#39;);
+						   e.setAttribute(&#39;type&#39;,&#39;text/javascript&#39;);
+						   e.setAttribute(&#39;charset&#39;,&#39;UTF-8&#39;);
+						   e.setAttribute(&#39;src&#39;,&#39;//assets.pinterest.com/js/pinmarklet.js?r=&#39;+Math.random()*99999999);
+						   document.body.appendChild(e);
+						" data-slimstat="5"><span class="iconFiller"><span class="spaceManWilly"><i class="sw swp_pinterest_icon"></i><span class="swp_share">Pin</span></span></span><span class="swp_count" style="transition: padding 0.1s linear 0s;">1</span></a></div><div class="nc_tweetContainer swp_share_button swp_facebook" data-network="facebook"><a class="nc_tweet swp_share_link" rel="nofollow noreferrer noopener" target="_blank" href="https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-link="https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-slimstat="5"><span class="iconFiller"><span class="spaceManWilly"><i class="sw swp_facebook_icon"></i><span class="swp_share">Share</span></span></span><span class="swp_count" style="transition: padding 0.1s linear 0s;">13</span></a></div><div class="nc_tweetContainer swp_share_button total_shares total_sharesalt"><span class="swp_count " style="transition: padding 0.1s linear 0s;">14 <span class="swp_label">Shares</span></span></div></div><div class="swp-content-locator"></div><div class="sharedaddy sd-block sd-like jetpack-likes-widget-wrapper jetpack-likes-widget-loaded" id="like-post-wrapper-17156210-15448-5d12ddaec7d85" data-src="https://widgets.wp.com/likes/#blog_id=17156210&amp;post_id=15448&amp;origin=www.jpaul.me&amp;obj_id=17156210-15448-5d12ddaec7d85" data-name="like-post-frame-17156210-15448-5d12ddaec7d85"><h3 class="sd-title">Like this:</h3><div class="likes-widget-placeholder post-likes-widget-placeholder" style="height: 55px; display: none;"><span class="button"><span>Like</span></span> <span class="loading">Loading...</span></div><iframe name="like-post-frame-17156210-15448-5d12ddaec7d85" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/saved_resource(7).html" height="55px" width="100%" frameborder="0" scrolling="no"></iframe><span class="sd-text-color"></span><a class="sd-link-color" data-slimstat="5"></a></div>
+<div id="jp-relatedposts" class="jp-relatedposts" style="display: block;">
+<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+<div class="jp-relatedposts-items jp-relatedposts-items-visual jp-relatedposts-grid "><div class="jp-relatedposts-post jp-relatedposts-post0 jp-relatedposts-post-thumbs" data-post-id="13272" data-post-format="false"><a class="jp-relatedposts-post-a" href="https://www.jpaul.me/2018/08/finally-a-geek-travel-router-i-love/" title="Finally, a geek travel router I love!
+
+My ideal travel router I&#39;ve been kicking around the idea of building a small travel router out of a Raspberry Pi or an Asus Tinkerboard for a while. My ideal product would be something that can connect to an upstream ISP via wired or wifi connectivity, while also having the horsepower…" rel="nofollow" data-origin="15448" data-position="0" data-slimstat="5"><img class="jp-relatedposts-post-img" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/51977at-g3L._SL1200_.jpg" width="350" alt="Finally, a geek travel router I love!"></a><h4 class="jp-relatedposts-post-title"><a class="jp-relatedposts-post-a" href="https://www.jpaul.me/2018/08/finally-a-geek-travel-router-i-love/" title="Finally, a geek travel router I love!
+
+My ideal travel router I&#39;ve been kicking around the idea of building a small travel router out of a Raspberry Pi or an Asus Tinkerboard for a while. My ideal product would be something that can connect to an upstream ISP via wired or wifi connectivity, while also having the horsepower…" rel="nofollow" data-origin="15448" data-position="0" data-slimstat="5">Finally, a geek travel router I love!</a></h4><p class="jp-relatedposts-post-excerpt">My ideal travel router I've been kicking around the idea of building a small travel router out of a Raspberry Pi or an Asus Tinkerboard&nbsp;for a while. My ideal product would be something that can connect to an upstream ISP via wired or wifi connectivity, while also having the horsepower…</p><p class="jp-relatedposts-post-date" style="display: block;">August 13, 2018</p><p class="jp-relatedposts-post-context">In "Product Reviews"</p></div><div class="jp-relatedposts-post jp-relatedposts-post1 jp-relatedposts-post-thumbs" data-post-id="13256" data-post-format="false"><a class="jp-relatedposts-post-a" href="https://www.jpaul.me/2018/08/serial-consoles-ftw-like-its-1978/" title="Serial Consoles FTW like its 1978!
+
+A little history If you&#39;re older than me I need not explain what a serial console is, but if you are younger than me then let me give you a little background information. Back in the day, they needed a way to make computers more user-friendly. switches and punch cards were…" rel="nofollow" data-origin="15448" data-position="1" data-slimstat="5"><img class="jp-relatedposts-post-img" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/DEC_VT100_terminal.jpg" width="350" alt="Serial Consoles FTW like its 1978!"></a><h4 class="jp-relatedposts-post-title"><a class="jp-relatedposts-post-a" href="https://www.jpaul.me/2018/08/serial-consoles-ftw-like-its-1978/" title="Serial Consoles FTW like its 1978!
+
+A little history If you&#39;re older than me I need not explain what a serial console is, but if you are younger than me then let me give you a little background information. Back in the day, they needed a way to make computers more user-friendly. switches and punch cards were…" rel="nofollow" data-origin="15448" data-position="1" data-slimstat="5">Serial Consoles FTW like its 1978!</a></h4><p class="jp-relatedposts-post-excerpt">A little history If you're&nbsp;older than me I need not explain what a serial console is, but if you are younger than me then let me give you a little background information. Back in the day, they needed a way to make computers more user-friendly. switches and punch cards were…</p><p class="jp-relatedposts-post-date" style="display: block;">August 7, 2018</p><p class="jp-relatedposts-post-context">In "Azure"</p></div><div class="jp-relatedposts-post jp-relatedposts-post2 jp-relatedposts-post-thumbs" data-post-id="9638" data-post-format="false"><a class="jp-relatedposts-post-a" href="https://www.jpaul.me/2015/02/start-up-of-a-cisco-ucs-mini/" title="Start up of a Cisco UCS Mini
+
+If you are looking for a high level datasheet on the Cisco UCS Mini check out my UCS Mini Anatomy Infographic.   This week I was able to play around with a new toy, a Cisco UCS Mini. I took some screenshots of the process of how to get it…" rel="nofollow" data-origin="15448" data-position="2" data-slimstat="5"><img class="jp-relatedposts-post-img" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/6-1024x5751.png" width="350" alt="Start up of a Cisco UCS Mini"></a><h4 class="jp-relatedposts-post-title"><a class="jp-relatedposts-post-a" href="https://www.jpaul.me/2015/02/start-up-of-a-cisco-ucs-mini/" title="Start up of a Cisco UCS Mini
+
+If you are looking for a high level datasheet on the Cisco UCS Mini check out my UCS Mini Anatomy Infographic.   This week I was able to play around with a new toy, a Cisco UCS Mini. I took some screenshots of the process of how to get it…" rel="nofollow" data-origin="15448" data-position="2" data-slimstat="5">Start up of a Cisco UCS Mini</a></h4><p class="jp-relatedposts-post-excerpt">If you are looking for a high level datasheet on the Cisco UCS Mini check out my UCS Mini Anatomy Infographic. &nbsp; This week I was able to play around with a new toy, a Cisco UCS Mini. I took some screenshots of the process of how to get it…</p><p class="jp-relatedposts-post-date" style="display: block;">February 18, 2015</p><p class="jp-relatedposts-post-context">In "Cisco UCS"</p></div></div></div> </div>
+<footer class="entry-footer">
+<span class="entry-cats"><strong>Filed in:</strong> <a href="https://www.jpaul.me/category/hardware/" rel="category tag" data-slimstat="5">Hardware</a>, <a href="https://www.jpaul.me/category/home-lab/" rel="category tag" data-slimstat="5">Home Lab</a>, <a href="https://www.jpaul.me/category/software/linux-related/" rel="category tag" data-slimstat="5">Linux Related</a></span> <span class="entry-tags"><strong>Tags:</strong> <a href="https://www.jpaul.me/tag/cisco/" rel="tag" data-slimstat="5">Cisco</a>, <a href="https://www.jpaul.me/tag/linux/" rel="tag" data-slimstat="5">linux</a>, <a href="https://www.jpaul.me/tag/raspberrypi/" rel="tag" data-slimstat="5">raspberrypi</a></span>
+</footer>
+</article>
+<div class="author-bio clearfix" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+<img alt="Justin Paul" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/de9b95aa2875c8600338abf1f3d70b7c.png" srcset="https://secure.gravatar.com/avatar/de9b95aa2875c8600338abf1f3d70b7c?s=150&amp;d=mm&amp;r=x 2x" class="avatar avatar-75 photo grav-hashed grav-hijack" height="75" width="75" itemprop="image" id="grav-de9b95aa2875c8600338abf1f3d70b7c-0"> <div class="description">
+<h3 class="author-title name">
+<a class="author-name url fn n" href="https://www.jpaul.me/author/admin/" rel="author" itemprop="url" data-slimstat="5"><span itemprop="name">Justin Paul</span></a>
+</h3>
+<p class="bio" itemprop="description">Justin is a Technical Alliances Architect for Zerto. He also specializes in all things geek. When not helping people learn about protecting their data from disasters, he is usually working on stuff in his home lab or spending time with his family.</p>
+</div>
+</div>
+<div class="entry-share">
+<h3>Share This Post</h3>
+<ul>
+<li><a href="https://twitter.com/intent/tweet?text=How%20to%20build%20a%20Raspberry%20Pi%20Serial%20Console%20Server%20with%20ser2net&amp;url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-slimstat="5"><i class="fa fa-twitter"></i></a></li>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-slimstat="5"><i class="fa fa-facebook"></i></a></li>
+<li><a href="https://plus.google.com/share?url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-slimstat="5"><i class="fa fa-google-plus"></i></a></li>
+<li><a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F&amp;title=How%20to%20build%20a%20Raspberry%20Pi%20Serial%20Console%20Server%20with%20ser2net&amp;summary=If%20you%E2%80%99ve%20ever%20built%20a%20Cisco%20CCNA%20lab%20or%20some%20other%20hardware%20lab%20that%20has%20serial%20console%20ports,%20there%20is%20a%20good%20chance%20you%20sat%20within%20a%20few%20feet%20of%20the%20gear%20with%20a%20serial%20cable%20to%20your%20computer%20while%20working%20on%20it.%20How%20fun%20was%20that?!?%20Recently%20a%20friend%20started%20studying%20for%20the%20CCNA%E2%80%A6&amp;source=Justin%27s%20IT%20Blog" data-slimstat="5"><i class="fa fa-linkedin"></i></a></li>
+<li><a href="javascript:window.print()" data-slimstat="5"><i class="fa fa-print"></i></a></li>
+</ul>
+</div>
+<div class="clearfix"></div>
+<div class="related-posts">
+<h3>Related Posts</h3>
+<ul class="clearfix">
+<li>
+<a href="https://www.jpaul.me/2019/04/why-the-hpe-c3000-bladesystem-is-the-best-lab-setup-ever/" data-slimstat="5">
+<img width="228" height="180" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/c3000-228x180.png" class="attachment-daily-widget-thumb-big size-daily-widget-thumb-big wp-post-image" alt="Why the HPE C3000 BladeSystem is the best lab setup ever" itemprop="image"> <h2 class="entry-title">Why the HPE C3000 BladeSystem is the best lab setup ever</h2> </a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2018/12/netplan-makes-linux-cross-hypervisor-migration-easy/" data-slimstat="5">
+<img width="300" height="180" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/netplan-logo-300x180.png" class="attachment-daily-widget-thumb-big size-daily-widget-thumb-big wp-post-image" alt="Netplan makes Linux Cross-Hypervisor migration easy!" itemprop="image"> <h2 class="entry-title">Netplan makes Linux Cross-Hypervisor migration easy!</h2> </a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2018/12/nutanix-acropolis-adding-cloud-native-stack/" data-slimstat="5">
+<img width="300" height="180" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/ntnx-logo-300x180.png" class="attachment-daily-widget-thumb-big size-daily-widget-thumb-big wp-post-image" alt="Nutanix Acropolis adding Cloud Native stack" itemprop="image"> <h2 class="entry-title">Nutanix Acropolis adding Cloud Native stack</h2> </a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2018/07/the-secret-sauce-behind-zplanner/" data-slimstat="5">
+<img width="300" height="180" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/zplanner-300x180.png" class="attachment-daily-widget-thumb-big size-daily-widget-thumb-big wp-post-image" alt="The Secret Sauce Behind zPlanner" itemprop="image"> <h2 class="entry-title">The Secret Sauce Behind zPlanner</h2> </a>
+</li>
+</ul>
+</div>
+<div id="comments" class="comments-area">
+<header>
+<h2 class="comments-title">
+<strong>4 Responses</strong>
+to "How to build a Raspberry Pi Serial Console Server with ser2net"
+</h2>
+</header>
+<ol class="commentlist">
+<li class="comment even thread-even depth-1" id="li-comment-719245" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment">
+<article id="comment-719245" class="comment-container">
+<img alt="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/0d6c4eceb3addffd441b1f9ec2389765.png" srcset="https://secure.gravatar.com/avatar/0d6c4eceb3addffd441b1f9ec2389765?s=120&amp;d=mm&amp;r=x 2x" class="avatar avatar-60 photo grav-hashed grav-hijack" height="60" width="60" itemprop="image" id="grav-0d6c4eceb3addffd441b1f9ec2389765-0">
+<div class="comment-head">
+<span class="name" itemprop="creator" itemscope="itemscope" itemtype="http://schema.org/Person"><span itemprop="name">Arkar</span></span>
+<span class="date"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#comment-719245" itemprop="url" data-slimstat="5"><time datetime="2019-05-26T01:24:18-04:00" itemprop="datePublished">May 26, 2019 at 1:24 am</time></a> <a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/" title="Edit Comment" data-slimstat="5">· Edit</a></span> </div>
+<div class="comment-content comment-entry comment" itemprop="text">
+<p>Hi Justin,<br>
+Awesome article and this is exactly what I need for my CCNP studies. (4x routers and 4x switches). I would like to attach 2x UGREEN 4 port mode to Raspberry 3 and basically screen or telnet to all 8 of them at the same time. You mentioned about Pi’s limit to USB power budget and do you think I would run into power limitation issues while connecting 8 devices?<br>
+regards.</p>
+<span class="reply">
+</span>
+</div>
+</article>
+</li>
+<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-719248" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment">
+<article id="comment-719248" class="comment-container">
+<img alt="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/c6d229aca5d4a701c3f4a605af36f51a.png" srcset="https://secure.gravatar.com/avatar/c6d229aca5d4a701c3f4a605af36f51a?s=120&amp;d=mm&amp;r=x 2x" class="avatar avatar-60 photo grav-hashed grav-hijack" height="60" width="60" itemprop="image" id="grav-c6d229aca5d4a701c3f4a605af36f51a-0">
+<div class="comment-head">
+<span class="name" itemprop="creator" itemscope="itemscope" itemtype="http://schema.org/Person"><span itemprop="name">Shiki</span></span>
+<span class="date"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#comment-719248" itemprop="url" data-slimstat="5"><time datetime="2019-06-17T23:55:38-04:00" itemprop="datePublished">June 17, 2019 at 11:55 pm</time></a> <a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/" title="Edit Comment" data-slimstat="5">· Edit</a></span> </div>
+<div class="comment-content comment-entry comment" itemprop="text">
+<p>Instead of telnet, can we do ssh version?</p>
+<span class="reply">
+</span>
+</div>
+</article>
+</li>
+<li class="comment even thread-even depth-1" id="li-comment-719249" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment">
+<article id="comment-719249" class="comment-container">
+<img alt="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/a572cdae9835fe8d8a23fc95b95d4f3f.png" srcset="https://secure.gravatar.com/avatar/a572cdae9835fe8d8a23fc95b95d4f3f?s=120&amp;d=mm&amp;r=x 2x" class="avatar avatar-60 photo grav-hashed grav-hijack" height="60" width="60" itemprop="image" id="grav-a572cdae9835fe8d8a23fc95b95d4f3f-0">
+<div class="comment-head">
+<span class="name" itemprop="creator" itemscope="itemscope" itemtype="http://schema.org/Person"><span itemprop="name">Charles Linquist</span></span>
+<span class="date"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#comment-719249" itemprop="url" data-slimstat="5"><time datetime="2019-06-18T11:05:48-04:00" itemprop="datePublished">June 18, 2019 at 11:05 am</time></a> <a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/" title="Edit Comment" data-slimstat="5">· Edit</a></span> </div>
+<div class="comment-content comment-entry comment" itemprop="text">
+<p>I need to use a program like SER2NET to deal with UDP protocol.; The latest version of Ser2Net that I can find for a Raspberry pi is 2.10.1, and it does not appear to contain that protocol. I was hoping that later versions would include include UDP. And I can’t get later versions to compile. My goal is – basically – to create a “virtual RS-232 cable”. Consider that if your computer has an RS-232 port. You can open that port and connect a cable to it – or not. If there is no cable, the data sent to that port goes nowhere, and nothing comes in to that port. But when the cable is connected to another device – data can flow. That is the kind of “connection” I need. tcp cannot provide that type of connection.</p>
+<span class="reply">
+</span>
+</div>
+</article>
+</li>
+<li class="comment byuser comment-author-admin bypostauthor odd alt thread-odd thread-alt depth-1" id="li-comment-719250" itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment">
+<article id="comment-719250" class="comment-container">
+<img alt="" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/de9b95aa2875c8600338abf1f3d70b7c(1).png" srcset="https://secure.gravatar.com/avatar/de9b95aa2875c8600338abf1f3d70b7c?s=120&amp;d=mm&amp;r=x 2x" class="avatar avatar-60 photo grav-hashed grav-hijack" height="60" width="60" itemprop="image" id="grav-de9b95aa2875c8600338abf1f3d70b7c-1">
+<div class="comment-head">
+<span class="name" itemprop="creator" itemscope="itemscope" itemtype="http://schema.org/Person"><span itemprop="name"><a href="http://jpaul.me/" rel="external nofollow" class="url" data-slimstat="5">Justin Paul</a></span></span>
+<span class="date"><a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#comment-719250" itemprop="url" data-slimstat="5"><time datetime="2019-06-19T08:12:14-04:00" itemprop="datePublished">June 19, 2019 at 8:12 am</time></a> <a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/" title="Edit Comment" data-slimstat="5">· Edit</a></span> </div>
+<div class="comment-content comment-entry comment" itemprop="text">
+<p>Hey Charles, so you are saying that SER2NET has UDP support, just not in the Pi version? Let me see if i can get it to compile.</p>
+<span class="reply">
+</span>
+</div>
+</article>
+</li>
+</ol>
+<div id="respond" class="comment-respond">
+<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#respond" style="display:none;" data-slimstat="5">Cancel reply</a></small>
+</h3>
+<form id="commentform" class="comment-form">
+<iframe title="Comment Form" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/saved_resource(8).html" style="width: 100%; height: 58px; border: 0px;" name="jetpack_remote_comment" class="jetpack_remote_comment" id="jetpack_remote_comment" sandbox="allow-same-origin allow-top-navigation allow-scripts allow-forms allow-popups" scrolling="no"></iframe>
+<!--[if !IE]><!-->
+<script>
+						document.addEventListener('DOMContentLoaded', function () {
+							var commentForms = document.getElementsByClassName('jetpack_remote_comment');
+							for (var i = 0; i < commentForms.length; i++) {
+								commentForms[i].allowTransparency = false;
+								commentForms[i].scrolling = 'no';
+							}
+						});
+					</script>
+<!--<![endif]-->
+<input id="ak_js" name="ak_js" type="hidden" value="1561517488969"></form>
+</div>
+<input type="hidden" name="comment_parent" id="comment_parent" value="">
+</div>
+</main>
+</section>
+<div id="secondary" class="widget-area sidebar1 column" role="complementary" aria-label="Primary Sidebar" itemscope="itemscope" itemtype="http://schema.org/WPSideBar" style="height: 5548px;">
+<aside id="useronline-3" class="widget widget_useronline"><h3 class="widget-title">Users Online Now</h3><div id="useronline-count"><a href="http://jpaul.me/useronline/" data-slimstat="5"><strong>81 Users</strong> Online</a></div><div id="useronline-browsing-page"><strong>6 Users</strong> Browsing This Page.<br>Users: <strong>6 Guests</strong></div></aside><aside id="text-3" class="widget widget_text"> <div class="textwidget"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/vmw-vexpert.png" alt="[description - what is this]"><br>
+<b>2011 - 2017</b><br>
+<a href="https://www.prchecker.info/" title="Check Google Page Rank" target="_blank" rel="noopener noreferrer" data-slimstat="5">
+<img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/getpr.php" alt="Check Google Page Rank" style="border:0;"></a><br></div>
+</aside><aside id="daily-ad125-2" class="widget widget-daily-ad125 widget_125"><h3 class="widget-title">Advertisement</h3>
+<div id="bsap_1295313" class="bsap bsap_1295313" data-serve="C6YIK2QI">
+<style type="text/css">
+div.bsap_1295313{width:100%;display:block;}div.bsap_1295313 a{width:125px;}div.bsap_1295313 a img{padding:0;}div.bsap_1295313 a em{font-style:normal;}div.bsap_1295313 a{display:block;font-size:11px;color:#888;font-family:verdana,sans-serif;margin:0 4px 10px 0;text-align:center;text-decoration:none;overflow:hidden;float:left;}
+div.bsap_1295313 img{border:0;clear:right;}
+div.bsap_1295313 a.adhere{color:#666;font-weight:bold;font-size:12px;border:1px solid #ccc;background:#e7e7e7;text-align:center;}
+div.bsap_1295313 a.adhere:hover{border:1px solid #999;background:#ddd;color:#333;}
+div.bsap_1295313 iframe{display:block;font-size:11px;color:#888;font-family:verdana,sans-serif;margin:0 4px 10px 0;text-align:center;text-decoration:none;overflow:hidden;float:left;}div.bsap_1295313 a{line-height:100%;}div.bsap_1295313 a.adhere{width:125px;height:125px;line-height:1000%;}html>body div.bsap_1295313 a.adhere{width:123px;height:123px;}div.bsap_1295313 img.s{height:0;width:0;}
+</style>
+<!-- no ad --><!-- no ad --><!-- no ad --><!-- no ad -->
+
+<a href="http://www.buysellads.com/buy/detail/228305/zone/1295313?utm_source=site_228305&amp;utm_medium=website&amp;utm_campaign=imagetext&amp;utm_content=zone_1295313" class="adhere" data-slimstat="5">Advertise Here</a>
+
+
+<script type="text/javascript" id="auto_1" class="ignoreme"> if (typeof(BSACallback) !== 'undefined') BSACallback(); </script></div>
+<div class="clear"></div> </aside><aside class="widget jpaul-widget"><a href="http://mautic.jpaul.me/asset/9:zerto-ad-link" data-slimstat="5"><img width="250" height="250" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/IS-12279_Zerto7_Ads_250x250_gif_a-1.gif" alt=""></a></aside>
+<aside id="wpp-8" class="widget popular-posts">
+<h3 class="widget-title">Popular Posts</h3>
+
+<ul class="wpp-list wpp-list-with-thumbnails">
+<li>
+<a href="https://www.jpaul.me/2012/11/anatomy-of-an-emc-vnx-array/" title="Anatomy of an EMC VNX Array" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/3505-featured-15x15.png" width="15" height="15" alt="Anatomy of an EMC VNX Array" class="wpp-thumbnail wpp_cached_thumb wpp_featured"></a>
+<a href="https://www.jpaul.me/2012/11/anatomy-of-an-emc-vnx-array/" title="Anatomy of an EMC VNX Array" class="wpp-post-title" target="_self" data-slimstat="5">Anatomy of an EMC VNX Array</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">29,507 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2011/06/datastore-provisioned-space-vs-free-space/" title="Datastore Provisioned Space vs Free Space" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/no_thumb.jpg" width="15" height="15" alt="Datastore Provisioned Space vs Free Space" class="wpp-thumbnail wpp_def_noPath wpp_featured"></a>
+<a href="https://www.jpaul.me/2011/06/datastore-provisioned-space-vs-free-space/" title="Datastore Provisioned Space vs Free Space" class="wpp-post-title" target="_self" data-slimstat="5">Datastore Provisioned Space vs Free Space</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">23,744 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2017/09/ubiquiti-unifi-virtual-appliance-2/" title="Ubiquiti Unifi Virtual Appliance 2.0" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/12381-featured-15x15.png" width="15" height="15" alt="Ubiquiti Unifi Virtual Appliance 2.0" class="wpp-thumbnail wpp_cached_thumb wpp_featured"></a>
+<a href="https://www.jpaul.me/2017/09/ubiquiti-unifi-virtual-appliance-2/" title="Ubiquiti Unifi Virtual Appliance 2.0" class="wpp-post-title" target="_self" data-slimstat="5">Ubiquiti Unifi Virtual Appliance 2.0</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">16,901 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2018/07/my-ubiquiti-unifi-appliance-3-0-now-even-more-super/" title="My Ubiquiti UniFi Appliance 3.0 – now even more super!" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/12833-featured-15x15.png" width="15" height="15" alt="My Ubiquiti UniFi Appliance 3.0 - now even more super!" class="wpp-thumbnail wpp_cached_thumb wpp_featured"></a>
+<a href="https://www.jpaul.me/2018/07/my-ubiquiti-unifi-appliance-3-0-now-even-more-super/" title="My Ubiquiti UniFi Appliance 3.0 – now even more super!" class="wpp-post-title" target="_self" data-slimstat="5">My Ubiquiti UniFi Appliance 3.0 – now even more super!</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">16,709 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2011/06/how-to-size-memory-for-vmware-servers/" title="How to Size Memory for VMware Servers" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/no_thumb.jpg" width="15" height="15" alt="How to Size Memory for VMware Servers" class="wpp-thumbnail wpp_def_noPath wpp_featured"></a>
+<a href="https://www.jpaul.me/2011/06/how-to-size-memory-for-vmware-servers/" title="How to Size Memory for VMware Servers" class="wpp-post-title" target="_self" data-slimstat="5">How to Size Memory for VMware Servers</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">16,647 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2014/05/power-101-for-the-it-guy/" title="Power 101 for the IT Guy" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/7672-featured-15x15.jpg" width="15" height="15" alt="Power 101 for the IT Guy" class="wpp-thumbnail wpp_cached_thumb wpp_featured"></a>
+<a href="https://www.jpaul.me/2014/05/power-101-for-the-it-guy/" title="Power 101 for the IT Guy" class="wpp-post-title" target="_self" data-slimstat="5">Power 101 for the IT Guy</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">16,606 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2012/07/how-to-migrate-ms-sql-cluster-to-a-new-san/" title="How-To: Migrate MS SQL Cluster to a New SAN" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/3017-featured-15x15.png" width="15" height="15" alt="How-To: Migrate MS SQL Cluster to a New SAN" class="wpp-thumbnail wpp_cached_thumb wpp_featured"></a>
+<a href="https://www.jpaul.me/2012/07/how-to-migrate-ms-sql-cluster-to-a-new-san/" title="How-To: Migrate MS SQL Cluster to a New SAN" class="wpp-post-title" target="_self" data-slimstat="5">How-To: Migrate MS SQL Cluster to a New SAN</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">15,146 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2017/01/ubiquitis-new-unifi-elite-offering/" title="Ubiquiti’s New Unifi Elite Offering" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/no_thumb.jpg" width="15" height="15" alt="Ubiquiti&#39;s New Unifi Elite Offering" class="wpp-thumbnail wpp_def_noPath wpp_featured"></a>
+<a href="https://www.jpaul.me/2017/01/ubiquitis-new-unifi-elite-offering/" title="Ubiquiti’s New Unifi Elite Offering" class="wpp-post-title" target="_self" data-slimstat="5">Ubiquiti’s New Unifi Elite Offering</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">14,929 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2016/07/ubiquiti-unifi-virtual-appliance/" title="Ubiquiti Unifi Virtual Appliance" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/10851-featured-15x15.png" width="15" height="15" alt="Ubiquiti Unifi Virtual Appliance" class="wpp-thumbnail wpp_cached_thumb wpp_featured"></a>
+<a href="https://www.jpaul.me/2016/07/ubiquiti-unifi-virtual-appliance/" title="Ubiquiti Unifi Virtual Appliance" class="wpp-post-title" target="_self" data-slimstat="5">Ubiquiti Unifi Virtual Appliance</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">13,971 views</span></span>
+</li>
+<li>
+<a href="https://www.jpaul.me/2010/11/fixing-datastore-usage-on-disk-alarms-when-using-virtual-san-software/" title="Fixing ‘Datastore Usage on Disk’ Alarms when using Virtual SAN Software" target="_self" data-slimstat="5"><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/no_thumb.jpg" width="15" height="15" alt="Fixing &#39;Datastore Usage on Disk&#39; Alarms when using Virtual SAN Software" class="wpp-thumbnail wpp_def_noPath wpp_featured"></a>
+<a href="https://www.jpaul.me/2010/11/fixing-datastore-usage-on-disk-alarms-when-using-virtual-san-software/" title="Fixing ‘Datastore Usage on Disk’ Alarms when using Virtual SAN Software" class="wpp-post-title" target="_self" data-slimstat="5">Fixing ‘Datastore Usage on Disk’ Alarms when using Virtual SAN Software</a>
+<span class="wpp-meta post-stats"><span class="wpp-views">11,025 views</span></span>
+</li>
+</ul>
+</aside>
+<aside id="blog_subscription-4" class="widget widget_blog_subscription jetpack_subscription_widget"><h3 class="widget-title">Subscribe to Blog via Email</h3>
+<form action="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#" method="post" accept-charset="utf-8" id="subscribe-blog-blog_subscription-4">
+<div id="subscribe-text"><p>Enter your email address to subscribe to this blog and receive notifications of new posts by email.</p>
+</div><p>Join 2,742 other subscribers</p>
+<p id="subscribe-email">
+<label id="jetpack-subscribe-label" class="screen-reader-text" for="subscribe-field-blog_subscription-4">
+Email Address </label>
+<input type="email" name="email" required="required" class="required" value="" id="subscribe-field-blog_subscription-4" placeholder="Email Address">
+</p>
+<p id="subscribe-submit">
+<input type="hidden" name="action" value="subscribe">
+<input type="hidden" name="source" value="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/">
+<input type="hidden" name="sub-type" value="widget">
+<input type="hidden" name="redirect_fragment" value="blog_subscription-4">
+<button type="submit" name="jetpack_subscriptions_widget">
+Subscribe </button>
+</p>
+</form>
+</aside></div> </div>
+<div class="clearfix"></div>
+<footer id="footer" class="container clearfix" role="contentinfo" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
+<div class="footer-column footer-column-1">
+<aside id="tag_cloud-8" class="widget widget_tag_cloud"><h3 class="widget-title">Tags</h3><div class="tagcloud"><a href="https://www.jpaul.me/tag/azure/" class="tag-cloud-link tag-link-458 tag-link-position-1" style="font-size: 11.279279279279pt;" aria-label="Azure (12 items)" data-slimstat="5">Azure</a>
+<a href="https://www.jpaul.me/tag/backup/" class="tag-cloud-link tag-link-9 tag-link-position-2" style="font-size: 8pt;" aria-label="backup (6 items)" data-slimstat="5">backup</a>
+<a href="https://www.jpaul.me/tag/backup-and-replication/" class="tag-cloud-link tag-link-56 tag-link-position-3" style="font-size: 9.2612612612613pt;" aria-label="Backup and Replication (8 items)" data-slimstat="5">Backup and Replication</a>
+<a href="https://www.jpaul.me/tag/blog/" class="tag-cloud-link tag-link-99 tag-link-position-4" style="font-size: 9.8918918918919pt;" aria-label="blog (9 items)" data-slimstat="5">blog</a>
+<a href="https://www.jpaul.me/tag/blog-news/" class="tag-cloud-link tag-link-234 tag-link-position-5" style="font-size: 10.396396396396pt;" aria-label="Blog News (10 items)" data-slimstat="5">Blog News</a>
+<a href="https://www.jpaul.me/tag/cisco/" class="tag-cloud-link tag-link-377 tag-link-position-6" style="font-size: 9.8918918918919pt;" aria-label="Cisco (9 items)" data-slimstat="5">Cisco</a>
+<a href="https://www.jpaul.me/tag/cloud/" class="tag-cloud-link tag-link-16 tag-link-position-7" style="font-size: 8.6306306306306pt;" aria-label="cloud (7 items)" data-slimstat="5">cloud</a>
+<a href="https://www.jpaul.me/tag/data-domain/" class="tag-cloud-link tag-link-344 tag-link-position-8" style="font-size: 9.2612612612613pt;" aria-label="data domain (8 items)" data-slimstat="5">data domain</a>
+<a href="https://www.jpaul.me/tag/design/" class="tag-cloud-link tag-link-12 tag-link-position-9" style="font-size: 9.2612612612613pt;" aria-label="design (8 items)" data-slimstat="5">design</a>
+<a href="https://www.jpaul.me/tag/disaster-recovery/" class="tag-cloud-link tag-link-63 tag-link-position-10" style="font-size: 8pt;" aria-label="Disaster Recovery (6 items)" data-slimstat="5">Disaster Recovery</a>
+<a href="https://www.jpaul.me/tag/emc/" class="tag-cloud-link tag-link-426 tag-link-position-11" style="font-size: 13.927927927928pt;" aria-label="EMC (20 items)" data-slimstat="5">EMC</a>
+<a href="https://www.jpaul.me/tag/exagrid/" class="tag-cloud-link tag-link-425 tag-link-position-12" style="font-size: 9.2612612612613pt;" aria-label="Exagrid (8 items)" data-slimstat="5">Exagrid</a>
+<a href="https://www.jpaul.me/tag/featured/" class="tag-cloud-link tag-link-357 tag-link-position-13" style="font-size: 22pt;" aria-label="Featured (91 items)" data-slimstat="5">Featured</a>
+<a href="https://www.jpaul.me/tag/hol/" class="tag-cloud-link tag-link-354 tag-link-position-14" style="font-size: 9.2612612612613pt;" aria-label="HOL (8 items)" data-slimstat="5">HOL</a>
+<a href="https://www.jpaul.me/tag/home-lab/" class="tag-cloud-link tag-link-438 tag-link-position-15" style="font-size: 8.6306306306306pt;" aria-label="Home Lab (7 items)" data-slimstat="5">Home Lab</a>
+<a href="https://www.jpaul.me/tag/howto/" class="tag-cloud-link tag-link-94 tag-link-position-16" style="font-size: 8.6306306306306pt;" aria-label="howto (7 items)" data-slimstat="5">howto</a>
+<a href="https://www.jpaul.me/tag/hp/" class="tag-cloud-link tag-link-41 tag-link-position-17" style="font-size: 10.900900900901pt;" aria-label="hp (11 items)" data-slimstat="5">hp</a>
+<a href="https://www.jpaul.me/tag/hp-p2000/" class="tag-cloud-link tag-link-68 tag-link-position-18" style="font-size: 9.2612612612613pt;" aria-label="HP P2000 (8 items)" data-slimstat="5">HP P2000</a>
+<a href="https://www.jpaul.me/tag/hp-p2000-g3/" class="tag-cloud-link tag-link-180 tag-link-position-19" style="font-size: 8pt;" aria-label="HP P2000 G3 (6 items)" data-slimstat="5">HP P2000 G3</a>
+<a href="https://www.jpaul.me/tag/iscsi/" class="tag-cloud-link tag-link-22 tag-link-position-20" style="font-size: 9.8918918918919pt;" aria-label="iSCSI (9 items)" data-slimstat="5">iSCSI</a>
+<a href="https://www.jpaul.me/tag/kubecon/" class="tag-cloud-link tag-link-526 tag-link-position-21" style="font-size: 9.2612612612613pt;" aria-label="KubeCon (8 items)" data-slimstat="5">KubeCon</a>
+<a href="https://www.jpaul.me/tag/kubernetes/" class="tag-cloud-link tag-link-525 tag-link-position-22" style="font-size: 8pt;" aria-label="Kubernetes (6 items)" data-slimstat="5">Kubernetes</a>
+<a href="https://www.jpaul.me/tag/microsoft/" class="tag-cloud-link tag-link-420 tag-link-position-23" style="font-size: 11.279279279279pt;" aria-label="Microsoft (12 items)" data-slimstat="5">Microsoft</a>
+<a href="https://www.jpaul.me/tag/powershell/" class="tag-cloud-link tag-link-472 tag-link-position-24" style="font-size: 8pt;" aria-label="Powershell (6 items)" data-slimstat="5">Powershell</a>
+<a href="https://www.jpaul.me/tag/pressrelease/" class="tag-cloud-link tag-link-524 tag-link-position-25" style="font-size: 8.6306306306306pt;" aria-label="PressRelease (7 items)" data-slimstat="5">PressRelease</a>
+<a href="https://www.jpaul.me/tag/replication/" class="tag-cloud-link tag-link-62 tag-link-position-26" style="font-size: 8pt;" aria-label="Replication (6 items)" data-slimstat="5">Replication</a>
+<a href="https://www.jpaul.me/tag/reviews/" class="tag-cloud-link tag-link-23 tag-link-position-27" style="font-size: 8pt;" aria-label="Reviews (6 items)" data-slimstat="5">Reviews</a>
+<a href="https://www.jpaul.me/tag/san/" class="tag-cloud-link tag-link-21 tag-link-position-28" style="font-size: 12.792792792793pt;" aria-label="SAN (16 items)" data-slimstat="5">SAN</a>
+<a href="https://www.jpaul.me/tag/smb/" class="tag-cloud-link tag-link-13 tag-link-position-29" style="font-size: 8.6306306306306pt;" aria-label="smb (7 items)" data-slimstat="5">smb</a>
+<a href="https://www.jpaul.me/tag/top-blog/" class="tag-cloud-link tag-link-327 tag-link-position-30" style="font-size: 8.6306306306306pt;" aria-label="Top Blog (7 items)" data-slimstat="5">Top Blog</a>
+<a href="https://www.jpaul.me/tag/ubiquiti/" class="tag-cloud-link tag-link-19 tag-link-position-31" style="font-size: 8.6306306306306pt;" aria-label="Ubiquiti (7 items)" data-slimstat="5">Ubiquiti</a>
+<a href="https://www.jpaul.me/tag/ucs/" class="tag-cloud-link tag-link-378 tag-link-position-32" style="font-size: 9.8918918918919pt;" aria-label="UCS (9 items)" data-slimstat="5">UCS</a>
+<a href="https://www.jpaul.me/tag/vcloud/" class="tag-cloud-link tag-link-428 tag-link-position-33" style="font-size: 11.783783783784pt;" aria-label="vCloud (13 items)" data-slimstat="5">vCloud</a>
+<a href="https://www.jpaul.me/tag/vcloud-director/" class="tag-cloud-link tag-link-285 tag-link-position-34" style="font-size: 8pt;" aria-label="vCloud Director (6 items)" data-slimstat="5">vCloud Director</a>
+<a href="https://www.jpaul.me/tag/vcloud-lab/" class="tag-cloud-link tag-link-282 tag-link-position-35" style="font-size: 8.6306306306306pt;" aria-label="vCloud Lab (7 items)" data-slimstat="5">vCloud Lab</a>
+<a href="https://www.jpaul.me/tag/veeam/" class="tag-cloud-link tag-link-8 tag-link-position-36" style="font-size: 18.216216216216pt;" aria-label="veeam (45 items)" data-slimstat="5">veeam</a>
+<a href="https://www.jpaul.me/tag/virtualization/" class="tag-cloud-link tag-link-416 tag-link-position-37" style="font-size: 11.279279279279pt;" aria-label="Virtualization (12 items)" data-slimstat="5">Virtualization</a>
+<a href="https://www.jpaul.me/tag/vmware/" class="tag-cloud-link tag-link-10 tag-link-position-38" style="font-size: 18.468468468468pt;" aria-label="vmware (47 items)" data-slimstat="5">vmware</a>
+<a href="https://www.jpaul.me/tag/vmware-view/" class="tag-cloud-link tag-link-38 tag-link-position-39" style="font-size: 10.900900900901pt;" aria-label="vmware view (11 items)" data-slimstat="5">vmware view</a>
+<a href="https://www.jpaul.me/tag/vmware-vsphere/" class="tag-cloud-link tag-link-64 tag-link-position-40" style="font-size: 9.8918918918919pt;" aria-label="VMware vSphere (9 items)" data-slimstat="5">VMware vSphere</a>
+<a href="https://www.jpaul.me/tag/vnxe/" class="tag-cloud-link tag-link-257 tag-link-position-41" style="font-size: 10.900900900901pt;" aria-label="VNXe (11 items)" data-slimstat="5">VNXe</a>
+<a href="https://www.jpaul.me/tag/vnxe3200/" class="tag-cloud-link tag-link-435 tag-link-position-42" style="font-size: 8pt;" aria-label="VNXe Series (6 items)" data-slimstat="5">VNXe Series</a>
+<a href="https://www.jpaul.me/tag/vsphere/" class="tag-cloud-link tag-link-24 tag-link-position-43" style="font-size: 8.6306306306306pt;" aria-label="vsphere (7 items)" data-slimstat="5">vsphere</a>
+<a href="https://www.jpaul.me/tag/vsphere-5/" class="tag-cloud-link tag-link-424 tag-link-position-44" style="font-size: 12.162162162162pt;" aria-label="vSphere 5 (14 items)" data-slimstat="5">vSphere 5</a>
+<a href="https://www.jpaul.me/tag/zerto/" class="tag-cloud-link tag-link-432 tag-link-position-45" style="font-size: 18.972972972973pt;" aria-label="Zerto (52 items)" data-slimstat="5">Zerto</a></div>
+</aside> </div>
+<div class="footer-column footer-column-2">
+<aside id="tag_cloud-3" class="widget widget_tag_cloud"><h3 class="widget-title">Categories</h3><div class="tagcloud"><a href="https://www.jpaul.me/category/virtualization/cloud-virtualization/azure/" class="tag-cloud-link tag-link-475 tag-link-position-1" style="font-size: 11.320512820513pt;" aria-label="Azure (6 items)" data-slimstat="5">Azure</a>
+<a href="https://www.jpaul.me/category/backup-recovery/" class="tag-cloud-link tag-link-7 tag-link-position-2" style="font-size: 19.307692307692pt;" aria-label="Backup and Recovery (54 items)" data-slimstat="5">Backup and Recovery</a>
+<a href="https://www.jpaul.me/category/big-data/" class="tag-cloud-link tag-link-374 tag-link-position-3" style="font-size: 9.974358974359pt;" aria-label="Big Data (4 items)" data-slimstat="5">Big Data</a>
+<a href="https://www.jpaul.me/category/blogging/" class="tag-cloud-link tag-link-466 tag-link-position-4" style="font-size: 9.974358974359pt;" aria-label="Blogging (4 items)" data-slimstat="5">Blogging</a>
+<a href="https://www.jpaul.me/category/certifications/" class="tag-cloud-link tag-link-86 tag-link-position-5" style="font-size: 14.012820512821pt;" aria-label="Certifications (13 items)" data-slimstat="5">Certifications</a>
+<a href="https://www.jpaul.me/category/hardware/cisco-ucs/" class="tag-cloud-link tag-link-384 tag-link-position-6" style="font-size: 12.217948717949pt;" aria-label="Cisco UCS (8 items)" data-slimstat="5">Cisco UCS</a>
+<a href="https://www.jpaul.me/category/virtualization/cloud-virtualization/" class="tag-cloud-link tag-link-302 tag-link-position-7" style="font-size: 10.692307692308pt;" aria-label="Cloud (5 items)" data-slimstat="5">Cloud</a>
+<a href="https://www.jpaul.me/category/containers/" class="tag-cloud-link tag-link-515 tag-link-position-8" style="font-size: 12.666666666667pt;" aria-label="Containers (9 items)" data-slimstat="5">Containers</a>
+<a href="https://www.jpaul.me/category/contests/" class="tag-cloud-link tag-link-240 tag-link-position-9" style="font-size: 11.769230769231pt;" aria-label="Contests (7 items)" data-slimstat="5">Contests</a>
+<a href="https://www.jpaul.me/category/backup-recovery/data-domain/" class="tag-cloud-link tag-link-348 tag-link-position-10" style="font-size: 11.320512820513pt;" aria-label="Data Domain (6 items)" data-slimstat="5">Data Domain</a>
+<a href="https://www.jpaul.me/category/design-tips/" class="tag-cloud-link tag-link-297 tag-link-position-11" style="font-size: 14.461538461538pt;" aria-label="Design Tips (15 items)" data-slimstat="5">Design Tips</a>
+<a href="https://www.jpaul.me/category/hardware/emc/" class="tag-cloud-link tag-link-256 tag-link-position-12" style="font-size: 15.717948717949pt;" aria-label="EMC (21 items)" data-slimstat="5">EMC</a>
+<a href="https://www.jpaul.me/category/news/events/" class="tag-cloud-link tag-link-449 tag-link-position-13" style="font-size: 9.0769230769231pt;" aria-label="Events (3 items)" data-slimstat="5">Events</a>
+<a href="https://www.jpaul.me/category/backup-recovery/exagrid/" class="tag-cloud-link tag-link-243 tag-link-position-14" style="font-size: 11.769230769231pt;" aria-label="Exagrid (7 items)" data-slimstat="5">Exagrid</a>
+<a href="https://www.jpaul.me/category/featured/" class="tag-cloud-link tag-link-138 tag-link-position-15" style="font-size: 11.320512820513pt;" aria-label="Featured (6 items)" data-slimstat="5">Featured</a>
+<a href="https://www.jpaul.me/category/hands-on-labs/" class="tag-cloud-link tag-link-353 tag-link-position-16" style="font-size: 11.320512820513pt;" aria-label="Hands on Labs (6 items)" data-slimstat="5">Hands on Labs</a>
+<a href="https://www.jpaul.me/category/hardware/" class="tag-cloud-link tag-link-469 tag-link-position-17" style="font-size: 9.0769230769231pt;" aria-label="Hardware (3 items)" data-slimstat="5">Hardware</a>
+<a href="https://www.jpaul.me/category/home-lab/" class="tag-cloud-link tag-link-447 tag-link-position-18" style="font-size: 11.769230769231pt;" aria-label="Home Lab (7 items)" data-slimstat="5">Home Lab</a>
+<a href="https://www.jpaul.me/category/howtos/" class="tag-cloud-link tag-link-87 tag-link-position-19" style="font-size: 16.25641025641pt;" aria-label="Howtos (24 items)" data-slimstat="5">Howtos</a>
+<a href="https://www.jpaul.me/category/storage/hp-msap2000/" class="tag-cloud-link tag-link-218 tag-link-position-20" style="font-size: 12.217948717949pt;" aria-label="HP MSA/P2000 (8 items)" data-slimstat="5">HP MSA/P2000</a>
+<a href="https://www.jpaul.me/category/virtualization/hyperv/" class="tag-cloud-link tag-link-286 tag-link-position-21" style="font-size: 11.769230769231pt;" aria-label="HyperV (7 items)" data-slimstat="5">HyperV</a>
+<a href="https://www.jpaul.me/category/software/linux-related/" class="tag-cloud-link tag-link-211 tag-link-position-22" style="font-size: 13.384615384615pt;" aria-label="Linux Related (11 items)" data-slimstat="5">Linux Related</a>
+<a href="https://www.jpaul.me/category/software/microsoft/" class="tag-cloud-link tag-link-85 tag-link-position-23" style="font-size: 15.358974358974pt;" aria-label="Microsoft (19 items)" data-slimstat="5">Microsoft</a>
+<a href="https://www.jpaul.me/category/network-design/" class="tag-cloud-link tag-link-5 tag-link-position-24" style="font-size: 15.897435897436pt;" aria-label="Network Design (22 items)" data-slimstat="5">Network Design</a>
+<a href="https://www.jpaul.me/category/news/" class="tag-cloud-link tag-link-235 tag-link-position-25" style="font-size: 16.525641025641pt;" aria-label="News (26 items)" data-slimstat="5">News</a>
+<a href="https://www.jpaul.me/category/software/opensource/" class="tag-cloud-link tag-link-315 tag-link-position-26" style="font-size: 12.666666666667pt;" aria-label="Open Source Projects (9 items)" data-slimstat="5">Open Source Projects</a>
+<a href="https://www.jpaul.me/category/personal/" class="tag-cloud-link tag-link-137 tag-link-position-27" style="font-size: 13.025641025641pt;" aria-label="Personal (10 items)" data-slimstat="5">Personal</a>
+<a href="https://www.jpaul.me/category/powercli/" class="tag-cloud-link tag-link-271 tag-link-position-28" style="font-size: 9.0769230769231pt;" aria-label="PowerCLI (3 items)" data-slimstat="5">PowerCLI</a>
+<a href="https://www.jpaul.me/category/news/press-releases/" class="tag-cloud-link tag-link-523 tag-link-position-29" style="font-size: 12.666666666667pt;" aria-label="Press Releases (9 items)" data-slimstat="5">Press Releases</a>
+<a href="https://www.jpaul.me/category/product-reviews/" class="tag-cloud-link tag-link-43 tag-link-position-30" style="font-size: 19.307692307692pt;" aria-label="Product Reviews (54 items)" data-slimstat="5">Product Reviews</a>
+<a href="https://www.jpaul.me/category/sponsors/" class="tag-cloud-link tag-link-217 tag-link-position-31" style="font-size: 9.0769230769231pt;" aria-label="Sponsors (3 items)" data-slimstat="5">Sponsors</a>
+<a href="https://www.jpaul.me/category/storage/" class="tag-cloud-link tag-link-3 tag-link-position-32" style="font-size: 19.217948717949pt;" aria-label="Storage (53 items)" data-slimstat="5">Storage</a>
+<a href="https://www.jpaul.me/category/personal/thoughts-and-wisdom/" class="tag-cloud-link tag-link-98 tag-link-position-33" style="font-size: 14.012820512821pt;" aria-label="Thoughts and Wisdom (13 items)" data-slimstat="5">Thoughts and Wisdom</a>
+<a href="https://www.jpaul.me/category/tsmith-co/" class="tag-cloud-link tag-link-226 tag-link-position-34" style="font-size: 8pt;" aria-label="tsmith.co (2 items)" data-slimstat="5">tsmith.co</a>
+<a href="https://www.jpaul.me/category/hardware/ubiquiti/" class="tag-cloud-link tag-link-444 tag-link-position-35" style="font-size: 11.769230769231pt;" aria-label="Ubiquiti (7 items)" data-slimstat="5">Ubiquiti</a>
+<a href="https://www.jpaul.me/category/uncategorized/" class="tag-cloud-link tag-link-1 tag-link-position-36" style="font-size: 8pt;" aria-label="Uncategorized (2 items)" data-slimstat="5">Uncategorized</a>
+<a href="https://www.jpaul.me/category/virtualization/vcloud/" class="tag-cloud-link tag-link-281 tag-link-position-37" style="font-size: 13.384615384615pt;" aria-label="vCloud (11 items)" data-slimstat="5">vCloud</a>
+<a href="https://www.jpaul.me/category/backup-recovery/veeam-2/" class="tag-cloud-link tag-link-230 tag-link-position-38" style="font-size: 17.24358974359pt;" aria-label="Veeam (31 items)" data-slimstat="5">Veeam</a>
+<a href="https://www.jpaul.me/category/virtualization/virtual-desktops/" class="tag-cloud-link tag-link-37 tag-link-position-39" style="font-size: 15.179487179487pt;" aria-label="Virtual Desktops (18 items)" data-slimstat="5">Virtual Desktops</a>
+<a href="https://www.jpaul.me/category/virtualization/" class="tag-cloud-link tag-link-4 tag-link-position-40" style="font-size: 22pt;" aria-label="Virtualization (108 items)" data-slimstat="5">Virtualization</a>
+<a href="https://www.jpaul.me/category/hardware/emc/vnxe3200/" class="tag-cloud-link tag-link-394 tag-link-position-41" style="font-size: 13.653846153846pt;" aria-label="VNXe Series (12 items)" data-slimstat="5">VNXe Series</a>
+<a href="https://www.jpaul.me/category/hardware/emc/vnx-series/" class="tag-cloud-link tag-link-397 tag-link-position-42" style="font-size: 10.692307692308pt;" aria-label="VNX Series (5 items)" data-slimstat="5">VNX Series</a>
+<a href="https://www.jpaul.me/category/virtualization/vsphere-5/" class="tag-cloud-link tag-link-236 tag-link-position-43" style="font-size: 14.012820512821pt;" aria-label="vSphere 5 (13 items)" data-slimstat="5">vSphere 5</a>
+<a href="https://www.jpaul.me/category/backup-recovery/zerto/" class="tag-cloud-link tag-link-367 tag-link-position-44" style="font-size: 19.038461538462pt;" aria-label="Zerto (50 items)" data-slimstat="5">Zerto</a>
+<a href="https://www.jpaul.me/category/software/zimbra/" class="tag-cloud-link tag-link-89 tag-link-position-45" style="font-size: 9.974358974359pt;" aria-label="Zimbra (4 items)" data-slimstat="5">Zimbra</a></div>
+</aside> </div>
+<div class="footer-column footer-column-3">
+<aside id="recent-posts-3" class="widget widget_recent_entries"> <h3 class="widget-title">Recent Posts</h3> <ul>
+<li>
+<a href="https://www.jpaul.me/2019/06/87-ways-the-new-unofficial-zerto-powershell-module-will-help-you/" data-slimstat="5">87 Ways the new Unofficial Zerto PowerShell Module will help you!</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/05/hands-on-iot-at-msbuild-with-the-azure-mxchip-devkit/" data-slimstat="5">Hands on IoT at #MSBuild with the Azure MXChip DevKit</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/05/runecast-analyzer-take-my-money-already/" data-slimstat="5">Runecast Analyzer – take my money already!</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/05/azure-automation-how-to-quickly-work-with-many-subscriptions/" data-slimstat="5">Azure Automation – How to quickly work with many subscriptions</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/04/azure-scale-sets-a-huge-boost-for-zerto-7-rto-time/" data-slimstat="5">Azure Scale Sets – A HUGE boost for Zerto 7 RTO time</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/04/zertocon-2019-hackathon-update/" data-slimstat="5">ZertoCon 2019 Hackathon Update</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/04/why-the-hpe-c3000-bladesystem-is-the-best-lab-setup-ever/" data-slimstat="5">Why the HPE C3000 BladeSystem is the best lab setup ever</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/" data-slimstat="5">How to build a Raspberry Pi Serial Console Server with ser2net</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2019/01/calling-all-hackers-zertocon-2019-wants-you/" data-slimstat="5">Calling all Hackers, ZertoCon 2019 Wants You!</a>
+</li>
+<li>
+<a href="https://www.jpaul.me/2018/12/10-in-demand-skills-to-learn-in-2019/" data-slimstat="5">10 In-demand skills to learn in 2019</a>
+</li>
+</ul>
+</aside> </div>
+<div class="footer-column footer-column-4">
+<aside id="meta-3" class="widget widget_meta"><h3 class="widget-title">Meta</h3> <ul>
+<li><a rel="nofollow" href="https://www.jpaul.me/wp-login.php?action=register" data-slimstat="5">Register</a></li> <li><a rel="nofollow" href="https://www.jpaul.me/wp-login.php" data-slimstat="5">Log in</a></li>
+<li><a href="https://www.jpaul.me/feed/" data-slimstat="5">Entries <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+<li><a href="https://www.jpaul.me/comments/feed/" data-slimstat="5">Comments <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+<li><a href="https://wordpress.org/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform." data-slimstat="5">WordPress.org</a></li> </ul>
+</aside> </div>
+<div id="site-bottom" class="container clearfix">
+<div class="copyright">© Copyright 2019 <a href="https://www.jpaul.me/" data-slimstat="5">Justin's IT Blog</a></div>
+</div>
+</footer>
+</div>
+<script type="text/javascript">
+/* <![CDATA[ */
+var useronlineL10n = {"ajax_url":"https:\/\/www.jpaul.me\/wp-admin\/admin-ajax.php","timeout":"300000"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/useronline.js.download"></script>
+<noscript>
+		<img src="https://mautic.jpaul.me/mtracking.gif?d=YTo0OntzOjg6Imxhbmd1YWdlIjtzOjU6ImVuX1VTIjtzOjg6InBhZ2VfdXJsIjtzOjE4MToiaHR0cHM6Ly93d3cuanBhdWwubWUvMjAxOS8wMS9ob3ctdG8tYnVpbGQtYS1yYXNwYmVycnktcGktc2VyaWFsLWNvbnNvbGUtc2VydmVyLXdpdGgtc2VyMm5ldD95ZWFyPTIwMTkmbW9udGhudW09MDEmbmFtZT1ob3ctdG8tYnVpbGQtYS1yYXNwYmVycnktcGktc2VyaWFsLWNvbnNvbGUtc2VydmVyLXdpdGgtc2VyMm5ldCI7czoxMDoicGFnZV90aXRsZSI7czo4NjoiSG93IHRvIGJ1aWxkIGEgUmFzcGJlcnJ5IFBpIFNlcmlhbCBDb25zb2xlIFNlcnZlciB3aXRoIHNlcjJuZXQgfCBKdXN0aW4mIzAzOTtzIElUIEJsb2ciO3M6ODoicmVmZXJyZXIiO3M6MjM6Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vIjt9"  style="display:none;" alt="" />
+	</noscript>
+ <div style="display:none">
+<div class="grofile-hash-map-de9b95aa2875c8600338abf1f3d70b7c">
+</div>
+<div class="grofile-hash-map-0d6c4eceb3addffd441b1f9ec2389765">
+</div>
+<div class="grofile-hash-map-c6d229aca5d4a701c3f4a605af36f51a">
+</div>
+<div class="grofile-hash-map-a572cdae9835fe8d8a23fc95b95d4f3f">
+</div>
+<div class="grofile-hash-map-de9b95aa2875c8600338abf1f3d70b7c">
+</div>
+</div>
+<script type="text/javascript">/* <![CDATA[ */ jQuery(document).ready( function() { jQuery.post( "https://www.jpaul.me/wp-admin/admin-ajax.php", { action : "entry_views", _ajax_nonce : "dc5af3333a", post_id : 15448 } ); } ); /* ]]> */</script>
+<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/www.jpaul.me\/2019\/01\/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net\/":15448};
+	</script>
+
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/devicepx-jetpack.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/core.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/widget.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/accordion.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/tabs.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/junkie-shortcodes.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var spuvar = {"is_admin":"","disable_style":"","ajax_mode":"1","ajax_url":"https:\/\/www.jpaul.me\/wp-admin\/admin-ajax.php","ajax_mode_url":"https:\/\/www.jpaul.me\/?spu_action=spu_load","pid":"15448","is_front_page":"","is_category":"","site_url":"https:\/\/www.jpaul.me","is_archive":"","is_search":"","is_preview":"","seconds_confirmation_close":"5"};
+var spuvar_social = [];
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/public.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var socialWarfare = {"addons":[],"post_id":"15448","floatBeforeContent":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/script.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/gprofiles.js(1).download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wpgroho.js(1).download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/daily.min.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var SlimStatParams = {"ajaxurl":"https:\/\/www.jpaul.me\/wp-admin\/admin-ajax.php","baseurl":"\/","extensions_to_track":"pdf,doc,xls,zip","outbound_classes_rel_href_to_not_track":"noslimstat,ab-item","ci":"YTo0OntzOjEyOiJjb250ZW50X3R5cGUiO3M6NDoicG9zdCI7czo4OiJjYXRlZ29yeSI7czoyMjoiNDY5LDQ0NywyMTEsMzc3LDQwLDM3MSI7czoxMDoiY29udGVudF9pZCI7aToxNTQ0ODtzOjY6ImF1dGhvciI7czo1OiJqcGF1bCI7fQ==.6d0daa0bbb1d041f418f3b1633b8a981"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wp-slimstat.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/effect.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/effect-blind.min.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var stbUserOptions = [];
+stbUserOptions = {"mode":"mix2","jsOptions":{"caption":{"text":"","fontFamily":"Impact, Verdana, Helvetica, Arial, sans-serif","fontSize":12,"collapsed":false,"collapsing":true,"imgMinus":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/minus.png","imgPlus":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/plus.png","duration":500,"side":"1"},"imgX":0,"imgY":3,"radius":5,"direction":"ltr","mtop":10,"mright":10,"mbottom":10,"mleft":10,"lineHeight":"inherit","shadow":{"enabled":true,"offsetX":0,"offsetY":0,"blur":15,"alpha":0.15,"color":"#555555"},"textShadow":{"enabled":false,"offsetX":1,"offsetY":1,"blur":3,"alpha":0.15,"color":"#000000"}},"cssOptions":{"roundedCorners":true,"mbottom":10,"imgHide":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/minus.png","imgShow":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/plus.png","strHide":"Hide","strShow":"Show"},"styles":[{"slug":"alert","name":"Alert!","stype":"system","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/alert.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#FD3C35"},"caption":{"fontColor":"#ffffff","color":"#FD3C35","colorTo":"#8D251D"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"FD3C35","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"FD3C35","captionBgColorEnd":"8D251D","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/alert.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/alert.png"}},{"slug":"black","name":"Black Quote","stype":"system","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/earth.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#3b3b3b"},"caption":{"fontColor":"#ffffff","color":"#3b3b3b","colorTo":"#000000"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"3B3B3B","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"3B3B3B","captionBgColorEnd":"000000","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/earth.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/earth.png"}},{"slug":"custom","name":"Custom Style","stype":"custom","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/heart.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#f7cdf5"},"caption":{"fontColor":"#ffffff","color":"#f7cdf5","colorTo":"#f77df1"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"F7CDF5","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"F7CDF5","captionBgColorEnd":"F77DF1","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/heart.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/heart.png"}},{"slug":"download","name":"Download","stype":"system","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/download.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#78c0f7"},"caption":{"fontColor":"#ffffff","color":"#78c0f7","colorTo":"#2e7cb9"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"78C0F7","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"78C0F7","captionBgColorEnd":"2E7CB9","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/download.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/download.png"}},{"slug":"grey","name":"Codes","stype":"special","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/gears.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#e3e3e3"},"caption":{"fontColor":"#ffffff","color":"#e3e3e3","colorTo":"#ababab"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"E3E3E3","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"E3E3E3","captionBgColorEnd":"ABABAB","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/gears.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/gears.png"}},{"slug":"info","name":"Info","stype":"system","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/info.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#a1ea94"},"caption":{"fontColor":"#ffffff","color":"#a1ea94","colorTo":"#79b06e"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"A1EA94","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"A1EA94","captionBgColorEnd":"79B06E","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/info.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/info.png"}},{"slug":"warning","name":"Warning!","stype":"system","jsStyle":{"image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/warning.png","color":"#ffffff","colorTo":"#dddddd","fontColor":"#000000","border":{"width":"0","color":"#FDE97D"},"caption":{"fontColor":"#ffffff","color":"#FDE97D","colorTo":"#F09C08"}},"cssStyle":{"color":"000000","captionColor":"FFFFFF","borderColor":"FDE97D","bgColor":"FFFFFF","bgColorEnd":"DDDDDD","captionBgColor":"FDE97D","captionBgColorEnd":"F09C08","image":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/warning.png","bigImg":"http:\/\/www.jpaul.me\/wp-content\/plugins\/wp-special-textboxes\/themes\/stb-light\/warning.png"}}]};;
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wstb.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/wp-embed.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/postmessage.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/jquery.jetpack-resize.min.js.download"></script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/queuehandler.min.js.download"></script>
+<script async="async" type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/form.js.download"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/sharing.min.js.download"></script>
+<script type="text/javascript">
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-twitter', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-facebook', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-linkedin', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-tumblr', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomtumblr', 'menubar=1,resizable=1,width=450,height=450' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-pocket', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcompocket', 'menubar=1,resizable=1,width=450,height=450' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-skype', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomskype', 'menubar=1,resizable=1,width=305,height=665' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-telegram', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomtelegram', 'menubar=1,resizable=1,width=450,height=450' );
+				return false;
+			});
+</script>
+<script type="text/javascript">
+
+		$(document).ready(function(){
+			$('#primary-menu').slicknav({
+				prependTo:'#primary-bar',
+				label: "PAGES"
+			});
+			$('#secondary-menu').slicknav({
+				prependTo:'#secondary-bar',
+				label: "CATEGORIES"
+			});
+		});
+
+	</script>
+<iframe src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/master.html" scrolling="no" id="likes-master" name="likes-master" style="display:none;"></iframe>
+<div id="likes-other-gravatars"><div class="likes-text"><span>%d</span> bloggers like this:</div><ul class="wpl-avatars sd-like-gravatars"></ul></div>
+<script type="text/javascript"> var swp_nonce = "074463096d";var swpFloatBeforeContent = false;var swpClickTracking = false;</script>
+<!--[if IE]>
+		<script type="text/javascript">
+			if ( 0 === window.location.hash.indexOf( '#comment-' ) ) {
+				// window.location.reload() doesn't respect the Hash in IE
+				window.location.hash = window.location.hash;
+			}
+		</script>
+		<![endif]-->
+<script type="text/javascript">
+			(function () {
+				var comm_par_el = document.getElementById( 'comment_parent' ),
+					comm_par = ( comm_par_el && comm_par_el.value ) ? comm_par_el.value : '',
+					frame = document.getElementById( 'jetpack_remote_comment' ),
+					tellFrameNewParent;
+
+				tellFrameNewParent = function () {
+					if ( comm_par ) {
+						frame.src = "https://jetpack.wordpress.com/jetpack-comment/?blogid=17156210&postid=15448&comment_registration=0&require_name_email=1&stc_enabled=1&stb_enabled=1&show_avatars=1&avatar_default=mystery&greeting=Leave+a+Reply&greeting_reply=Leave+a+Reply+to+%25s&color_scheme=light&lang=en_US&jetpack_version=7.4.1&show_cookie_consent=10&has_cookie_consent=0&token_key=%3Bnormal%3B&sig=2ba9102066157ee820ab2195b192a41429ced559#parent=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" + '&replytocom=' + parseInt( comm_par, 10 ).toString();
+					} else {
+						frame.src = "https://jetpack.wordpress.com/jetpack-comment/?blogid=17156210&postid=15448&comment_registration=0&require_name_email=1&stc_enabled=1&stb_enabled=1&show_avatars=1&avatar_default=mystery&greeting=Leave+a+Reply&greeting_reply=Leave+a+Reply+to+%25s&color_scheme=light&lang=en_US&jetpack_version=7.4.1&show_cookie_consent=10&has_cookie_consent=0&token_key=%3Bnormal%3B&sig=2ba9102066157ee820ab2195b192a41429ced559#parent=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F";
+					}
+				};
+
+				
+				// Do the post message bit after the dom has loaded.
+				document.addEventListener( 'DOMContentLoaded', function () {
+					var iframe_url = "https:\/\/jetpack.wordpress.com";
+					if ( window.postMessage ) {
+						if ( document.addEventListener ) {
+							window.addEventListener( 'message', function ( event ) {
+								var origin = event.origin.replace( /^http:\/\//i, 'https://' );
+								if ( iframe_url.replace( /^http:\/\//i, 'https://' ) !== origin ) {
+									return;
+								}
+								jQuery( frame ).height( event.data );
+							});
+						} else if ( document.attachEvent ) {
+							window.attachEvent( 'message', function ( event ) {
+								var origin = event.origin.replace( /^http:\/\//i, 'https://' );
+								if ( iframe_url.replace( /^http:\/\//i, 'https://' ) !== origin ) {
+									return;
+								}
+								jQuery( frame ).height( event.data );
+							});
+						}
+					}
+				})
+
+			})();
+		</script>
+<script type="text/javascript" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/e-201926.js.download" async="async" defer="defer"></script>
+<script type="text/javascript">
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:7.4.1',blog:'17156210',post:'15448',tz:'-4',srv:'www.jpaul.me'} ]);
+	_stq.push([ 'clickTrackerInit', '17156210', '15448' ]);
+</script>
+
+
+<div id="sharing_email" style="display: none;">
+<form action="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/" method="post">
+<label for="target_email">Send to Email Address</label>
+<input type="email" name="target_email" id="target_email" value="">
+<label for="source_name">Your Name</label>
+<input type="text" name="source_name" id="source_name" value="">
+<label for="source_email">Your Email Address</label>
+<input type="email" name="source_email" id="source_email" value="">
+<input type="text" id="jetpack-source_f_name" name="source_f_name" class="input" value="" size="25" autocomplete="off" title="This field is for validation and should not be changed">
+<img style="float: right; display: none" class="loading" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/loading.gif" alt="loading" width="16" height="16">
+<input type="submit" value="Send Email" class="sharing_send">
+<a rel="nofollow" href="https://www.jpaul.me/2019/01/how-to-build-a-raspberry-pi-serial-console-server-with-ser2net/#cancel" class="sharing_cancel" role="button" data-slimstat="5">Cancel</a>
+<div class="errors errors-1" style="display: none;">
+Post was not sent - check your email addresses! </div>
+<div class="errors errors-2" style="display: none;">
+Email check failed, please try again </div>
+<div class="errors errors-3" style="display: none;">
+Sorry, your blog cannot share posts by email. </div>
+</form>
+</div><img src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/g.gif" alt=":)" width="6" height="5" id="wpstats"><div id="drift-widget-container" style="position: absolute; z-index: 2147483647;"><iframe id="drift-widget" src="./How to build a Raspberry Pi Serial Console Server with ser2net _ Justin&#39;s IT Blog_files/index.html" title="Drift Messenger" role="complementary" class="drift-widget-welcome-away" style="border: none; display: block; height: 76px !important; width: 76px !important; position: fixed; top: auto; left: auto; bottom: 24px; right: 24px; visibility: visible; z-index: 2147483647; max-height: 100vh; max-width: 100vw; transition: none 0s ease 0s; background: none transparent; opacity: 1;"></iframe></div><div class="nc_wrapper swp_floating_horizontal_wrapper bottom" style="background-color: rgb(255, 255, 255);"><div class="swp_social_panel swp_horizontal_panel swp_flat_fresh  swp_default_full_color swp_individual_full_color swp_other_full_color scale-100  scale- nc_floater" data-min-width="1100" data-float-color="#ffffff" data-float="bottom" data-float-mobile="bottom" data-transition="slide" style="width: 822px; left: 98px;"><div class="nc_tweetContainer swp_share_button swp_twitter" data-network="twitter"><a class="nc_tweet swp_share_link" rel="nofollow noreferrer noopener" target="_blank" href="https://twitter.com/intent/tweet?text=How+to+build+a+Raspberry+Pi+Serial+Console+Server+with+ser2net&amp;url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F&amp;via=recklessop" data-link="https://twitter.com/intent/tweet?text=How+to+build+a+Raspberry+Pi+Serial+Console+Server+with+ser2net&amp;url=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F&amp;via=recklessop" data-slimstat="5"><span class="swp_count swp_hide" style="transition: padding 0.1s linear 0s;"><span class="iconFiller"><span class="spaceManWilly"><i class="sw swp_twitter_icon"></i><span class="swp_share">Tweet</span></span></span></span></a></div><div class="nc_tweetContainer swp_share_button swp_pinterest" data-network="pinterest"><a rel="nofollow noreferrer noopener" class="nc_tweet swp_share_link noPop" onclick="var e=document.createElement(&#39;script&#39;);
+						   e.setAttribute(&#39;type&#39;,&#39;text/javascript&#39;);
+						   e.setAttribute(&#39;charset&#39;,&#39;UTF-8&#39;);
+						   e.setAttribute(&#39;src&#39;,&#39;//assets.pinterest.com/js/pinmarklet.js?r=&#39;+Math.random()*99999999);
+						   document.body.appendChild(e);
+						" data-slimstat="5"><span class="iconFiller"><span class="spaceManWilly"><i class="sw swp_pinterest_icon"></i><span class="swp_share">Pin</span></span></span><span class="swp_count" style="transition: padding 0.1s linear 0s;">1</span></a></div><div class="nc_tweetContainer swp_share_button swp_facebook" data-network="facebook"><a class="nc_tweet swp_share_link" rel="nofollow noreferrer noopener" target="_blank" href="https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-link="https://www.facebook.com/share.php?u=https%3A%2F%2Fwww.jpaul.me%2F2019%2F01%2Fhow-to-build-a-raspberry-pi-serial-console-server-with-ser2net%2F" data-slimstat="5"><span class="iconFiller"><span class="spaceManWilly"><i class="sw swp_facebook_icon"></i><span class="swp_share">Share</span></span></span><span class="swp_count" style="transition: padding 0.1s linear 0s;">13</span></a></div><div class="nc_tweetContainer swp_share_button total_shares total_sharesalt"><span class="swp_count " style="transition: padding 0.1s linear 0s;">14 <span class="swp_label">Shares</span></span></div></div></div></body></html>
