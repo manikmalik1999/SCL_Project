@@ -1,1 +1,5 @@
 This is the folder for all the front end files
+
+Create a react project by typing "npm i create-react-app"
+After installing that now create the react app by adding the following command 
+"create-react-app "Name of project""
